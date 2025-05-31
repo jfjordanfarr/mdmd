@@ -1,0 +1,96 @@
+{
+  "name": "MDMD Project (Node.js & TypeScript)",
+  // Use a Node.js focused devcontainer image that includes TypeScript.
+  // The :20-bookworm variant is often a good balance.
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20-bookworm",
+
+  "features": {
+    // Python for AgentOps scripts (Node base image usually doesn't have it)
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    // Docker (often useful for other testing or if mystmd needs it for something)
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // GitHub CLI (useful for interacting with GitHub)
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+
+  // Optional: If your MyST plugin development involves a local server or preview via mystmd
+  // "forwardPorts": [3000], // mystmd start often uses port 3000
+  // "portsAttributes": {
+  // 	"3000": {
+  // 		"label": "MyST Preview"
+  // 	}
+  // },
+
+  // Commands to run after the container is created
+  // Install pathspec for AgentOps scripts.
+  // Globally install mystmd CLI (or we can use npx later).
+  // Globally install common JS/TS dev tools if not project-local.
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pip && pip3 install --user pathspec && npm install -g mystmd typescript eslint prettier",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Core TypeScript/JavaScript
+        "dbaeumer.vscode-eslint", // ESLint integration
+        "esbenp.prettier-vscode", // Prettier integration
+        "ms-vscode.vscode-typescript-next", // Uses workspace's TS version
+        "VisualStudioExptTeam.vscodeintellicode", // AI-assisted IntelliSense
+
+        // MyST & Markdown
+        "unifiedjs.vscode-myst", // MyST Markdown language support
+        "bierner.markdown-mermaid", // Mermaid diagram previews (still useful)
+        "DavidAnson.vscode-markdownlint", // Markdownlint for general MD files
+
+        // Copilot
+        "GitHub.copilot-chat",
+        "GitHub.copilot",
+
+        // Python (for AgentOps)
+        "ms-python.python",
+
+        // General Utility
+        "EditorConfig.EditorConfig" // Enforces .editorconfig
+      ],
+      "settings": {
+        // General Editor Settings
+        "editor.formatOnSave": true,
+        "files.eol": "\n", // Ensure LF line endings
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+
+        // JavaScript/TypeScript specific
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode", // Can also use markdownlint for formatting
+          "editor.wordWrap": "on"
+        },
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+        "eslint.run": "onSave", // Or "onType"
+        "eslint.format.enable": true, // Allow ESLint to also format (works with Prettier plugin)
+
+        "typescript.tsdk": "node_modules/typescript/lib", // Use project's TS version
+
+        // Python for AgentOps
+        "python.defaultInterpreterPath": "/usr/local/bin/python3" // Path from Python feature
+      }
+    }
+  },
+  "remoteUser": "node" // This image uses 'node' as the default non-root user
+}

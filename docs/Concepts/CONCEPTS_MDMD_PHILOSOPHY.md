@@ -8,8 +8,8 @@ MDMD (Membrane Design MarkDown) aims to be a universal textual medium for progre
 
 The design of any complex system can be conceptualized as a "bilayer membrane":
 
-*   **Inner Leaflet (The Concrete Contract):** The precise, verifiable interfaces and definitions of fundamental building blocks. These are the points of direct interaction with "reality" (e.g., executable code, physical material specifications, defined legal terms).
-*   **Outer Leaflet (The Conceptual Architecture):** The organization, relationships, interactions, and purpose of these building blocks, forming coherent larger structures and explaining the system's "why" and "how" at a human-understandable level.
+- **Inner Leaflet (The Concrete Contract):** The precise, verifiable interfaces and definitions of fundamental building blocks. These are the points of direct interaction with "reality" (e.g., executable code, physical material specifications, defined legal terms).
+- **Outer Leaflet (The Conceptual Architecture):** The organization, relationships, interactions, and purpose of these building blocks, forming coherent larger structures and explaining the system's "why" and "how" at a human-understandable level.
 
 MDMD provides the language to describe both leaflets and their interplay.
 
@@ -25,9 +25,10 @@ MDMD provides the language to describe both leaflets and their interplay.
 ## The Role of LLMs
 
 LLMs act as:
-*   **Interpreters:** Understanding MDMD files guided by the MDMD Specification.
-*   **Generators:** Drafting MDMD content from high-level ideas or existing artifacts (code, documents).
-*   **Translators:** Bridging MDMD specifications to/from implementation-specific details.
-*   **Assistants:** Helping humans refine, link, and maintain MDMD documents.
+
+- **Interpreters:** Understanding MDMD files guided by the MDMD Specification.
+- **Generators:** Drafting MDMD content from high-level ideas or existing artifacts (code, documents).
+- **Translators:** Bridging MDMD specifications to/from implementation-specific details.
+- **Assistants:** Helping humans refine, link, and maintain MDMD documents.
 
 MDMD is the structured language for this human-AI dialogue.
