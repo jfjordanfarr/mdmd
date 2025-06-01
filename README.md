@@ -1,4 +1,4 @@
-# MDMD: Membrane Design MarkDown  мем
+# MDMD: Membrane Design MarkDown
 
 **MDMD (Membrane Design MarkDown)** is an innovative open-source project aimed at creating a universal textual medium for progressively concretizing ideas into fully specified, actionable solutions. It facilitates a symbiotic collaboration between human intellect and Artificial Intelligence, enabling the design and specification of complex systems across diverse domains – from software architecture and engineering blueprints to legal frameworks and creative works.
 
