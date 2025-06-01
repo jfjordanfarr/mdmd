@@ -1,3 +1,846 @@
+# Code Dump: mdmd
+
+*Generated on: mdmd*
+
+## .eslintrc.js
+
+```javascript
+// .eslintrc.js
+module.exports = {
+  root: true,
+  parser: "@typescript-eslint/parser", // Specifies the ESLint parser for TypeScript
+  parserOptions: {
+    ecmaVersion: 2022, // Allows for the parsing of modern ECMAScript features
+    sourceType: "module", // Allows for the use of imports
+    project: "./tsconfig.json", // Important: Point ESLint to your tsconfig.json
+  },
+  plugins: [
+    "@typescript-eslint", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "prettier", // Integrates Prettier with ESLint
+  ],
+  extends: [
+    "eslint:recommended", // ESLint's built-in recommended rules
+    "plugin:@typescript-eslint/recommended", // Recommended rules for TypeScript
+    "plugin:@typescript-eslint/recommended-requiring-type-checking", // Additional rules requiring type information
+    "prettier", // Disables ESLint rules that would conflict with Prettier
+    "plugin:prettier/recommended", // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+  ],
+  env: {
+    node: true, // Enables Node.js global variables and Node.js scoping.
+    es2022: true, // Add global variables for ES2022.
+  },
+  rules: {
+    // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs.
+    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn", // Warn on 'any' type
+    "prettier/prettier": "warn", // Show Prettier problems as warnings
+    // Add any project-specific rules here
+  },
+  ignorePatterns: [
+    "node_modules/",
+    "dist/",
+    ".eslintrc.js",
+    ".prettierrc.js", // also ignore prettier config
+    ".devcontainer/",
+    ".github/",
+    "AgentOps/",
+  ],
+};
+
+```
+
+## LICENSE
+
+```
+MIT License
+
+Copyright (c) 2025 Jordan Farr
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```
+
+## test-doc.myst.md
+
+```markdown
+# MDMD Test Document
+
+::: {unit id="unit001" unit-type="csharp-class" language="csharp" brief="A test C# class."}
+This is a C# class.
+
+```csharp
+public class MyClass1 {}
+```
+
+:::
+
+::: {unit id="unit002" unit-type="python-function" language="python" brief="A Python function."}
+This is a Python function.
+
+```python
+def my_func():
+    pass
+```
+
+:::
+
+::: {composition id="comp001" composition-type="logical-module" brief="A module combining two units."}
+This composition uses [[unit001]] and [[unit002]].
+
+```mermaid
+graph TD
+    U1["Unit 1<br>Ref: [[unit001]]"] --> U2["Unit 2<br>Ref: [[unit002]]"]
+end
+```
+
+:::
+
+```
+
+## .markdownlint.json
+
+```json
+{
+  "default": true,
+  "MD013": { "line_length": 500 },
+  "MD041": false,
+  "no-hard-tabs": true,
+  "whitespace": false,
+  "MD040": false,
+  "MD048": false,
+  "MD024": true,
+  "directories": {
+    "AgentOps": {
+      "MD013": false,
+      "MD004": false,
+      "MD024": false,
+      "MD033": { "allowed_elements": ["details", "summary", "br"] },
+      "MD041": false,
+      "MD009": false,
+      "MD010": false,
+      "MD012": false,
+      "MD022": false,
+      "MD025": false,
+      "MD026": false,
+      "MD031": false,
+      "MD032": false,
+      "MD034": false,
+      "MD040": false,
+      "MD046": false,
+      "MD047": false
+    },
+    "MDMD_Specification": {
+      "MD013": { "line_length": 100 },
+      "MD033": { "allowed_elements": ["br"] }
+    },
+    "docs": {
+      "MD013": { "line_length": 100 },
+      "MD033": { "allowed_elements": ["br"] }
+    }
+  },
+  "fenced-code-blocks": {
+    "style": "consistent",
+    "marker": "```"
+  }
+}
+
+```
+
+## tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "ES2022", // Target modern ECMAScript features
+    "module": "ESNext", // For .mjs output
+    "moduleResolution": "Bundler", // Modern resolution, often better for ESM
+    "lib": ["ES2022", "DOM"], // Include ES2022 features and DOM types (useful for web-standard APIs Myst or its deps might use)
+    "declaration": true, // Generate .d.ts files
+    "declarationMap": true, // Generate source maps for .d.ts files
+    "sourceMap": true, // Generate .js.map source map files
+    "outDir": "./dist", // Output directory for compiled JavaScript
+    "rootDir": "./src", // Specify root directory of source files
+    "composite": true, // Enables building dependent projects (if any later) more efficiently
+
+    /* Strict Type-Checking Options */
+    "strict": true, // Enable all strict type-checking options
+    "noImplicitAny": true, // Raise error on expressions and declarations with an implied 'any' type.
+    "strictNullChecks": true, // Enable strict null checks
+    "strictFunctionTypes": true, // Enable strict checking of function types.
+    "strictBindCallApply": true, // Enable strict 'bind', 'call', and 'apply' methods on functions.
+    "strictPropertyInitialization": true, // Ensure non-undefined class properties are initialized in the constructor.
+    "noImplicitThis": true, // Raise error on 'this' expressions with an implied 'any' type.
+    "alwaysStrict": true, // Parse in strict mode and emit "use strict" for each source file.
+
+    /* Module Resolution Options */
+    "resolveJsonModule": true, // Include modules imported with .json extension
+    "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+
+    /* Experimental Options */
+    // "experimentalDecorators": true, // Uncomment if you use decorators
+    // "emitDecoratorMetadata": true, // Uncomment if you use decorators with metadata
+
+    /* Advanced Options */
+    "skipLibCheck": true, // Skip type checking of all declaration files (*.d.ts).
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
+    "isolatedModules": true // Ensures each file can be safely transpiled without relying on other imports for type information (good for some bundlers)
+  },
+  "include": ["src/**/*"], // Which files to include in compilation
+  "exclude": ["node_modules", "dist", "tests", "**/*.spec.ts", "**/*.test.ts"] // Which files to exclude
+}
+
+```
+
+## myst.yml
+
+```yaml
+version: 1
+project:
+  title: MDMD Plugin Test
+  plugins:
+    - ./dist/index.mjs # Path to your compiled plugin entry point
+
+```
+
+## package.json
+
+```json
+{
+  "name": "mdmd",
+  "version": "0.1.0",
+  "description": "Membrane Design MarkDown (MDMD): A MyST Markdown plugin and methodology for specifying complex solutions via {unit} and {composition} primitives, designed for human-AI collaboration.",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "MDMD_Specification/"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsc --watch --project tsconfig.json",
+    "lint": "eslint ./src --ext .ts,.js",
+    "lint:fix": "eslint ./src --ext .ts,.js --fix",
+    "format": "prettier --write \"**/*.{ts,js,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md,yaml,yml}\"",
+    "test": "echo \"Error: no test specified yet. TODO: Add Vitest/Jest\" && exit 0",
+    "clean": "rm -rf ./dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfjordanfarr/mdmd.git"
+  },
+  "keywords": [
+    "myst",
+    "markdown",
+    "specification",
+    "design",
+    "llm",
+    "ai",
+    "unit",
+    "composition",
+    "mdmd"
+  ],
+  "author": "Jordan Sterling Farr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jfjordanfarr/mdmd/issues"
+  },
+  "homepage": "https://github.com/jfjordanfarr/mdmd#readme",
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^20.12.12",
+    "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "@typescript-eslint/parser": "^7.10.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "myst-common": "^1.1.2",
+    "myst-parser": "^1.5.14",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
+    "unist-builder": "^4.0.0"
+  },
+  "dependencies": {
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5"
+  }
+}
+
+```
+
+## .gitignore
+
+```ignore
+## Ignore Visual Studio temporary files, build results, and
+## files generated by popular Visual Studio add-ons.
+##
+## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Aa][Rr][Mm]64[Ee][Cc]/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+# Uncomment if you have tasks that create the project's static files in wwwroot
+#wwwroot/
+
+# Visual Studio 2017 auto generated files
+Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+# Benchmark Results
+BenchmarkDotNet.Artifacts/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# StyleCop
+StyleCopReport.xml
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+# but not Directory.Build.rsp, as it configures directory-level build defaults
+!Directory.Build.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Chutzpah Test files
+_Chutzpah*
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio Trace Files
+*.e2e
+
+# TFS 2012 Local Workspace
+$tf/
+
+# Guidance Automation Toolkit
+*.gpState
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# TeamCity is a build add-in
+_TeamCity*
+
+# DotCover is a Code Coverage Tool
+*.dotCover
+
+# AxoCover is a Code Coverage Tool
+.axoCover/*
+!.axoCover/settings.json
+
+# Coverlet is a free, cross platform Code Coverage Tool
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# NCrunch
+_NCrunch_*
+.NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# MightyMoose
+*.mm.*
+AutoTest.Net/
+
+# Web workbench (sass)
+.sass-cache/
+
+# Installshield output folder
+[Ee]xpress/
+
+# DocProject is a documentation generator add-in
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once directory
+publish/
+
+# Publish Web Output
+*.[Pp]ublish.xml
+*.azurePubxml
+# Note: Comment the next line if you want to checkin your web deploy settings,
+# but database connection strings (with potential passwords) will be unencrypted
+*.pubxml
+*.publishproj
+
+# Microsoft Azure Web App publish settings. Comment the next line if you want to
+# checkin your Azure Web App publish settings, but sensitive information contained
+# in these scripts will be unencrypted
+PublishScripts/
+
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/[Pp]ackages/repositories.config
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+# Microsoft Azure Build Output
+csx/
+*.build.csdef
+
+# Microsoft Azure Emulator
+ecf/
+rcf/
+
+# Windows Store app package directories and files
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+*.appx
+*.appxbundle
+*.appxupload
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!?*.[Cc]ache/
+
+# Others
+ClientBin/
+~$*
+*~
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+
+# Including strong name files can present a security risk
+# (https://github.com/github/gitignore/pull/2483#issue-259490424)
+#*.snk
+
+# Since there are multiple workflows, uncomment next line to ignore bower_components
+# (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
+#bower_components/
+
+# RIA/Silverlight projects
+Generated_Code/
+
+# Backup & report files from converting an old project file
+# to a newer Visual Studio version. Backup files are not needed,
+# because we have git ;-)
+_UpgradeReport_Files/
+Backup*/
+UpgradeLog*.XML
+UpgradeLog*.htm
+ServiceFabricBackup/
+*.rptproj.bak
+
+# SQL Server files
+*.mdf
+*.ldf
+*.ndf
+
+# Business Intelligence projects
+*.rdl.data
+*.bim.layout
+*.bim_*.settings
+*.rptproj.rsuser
+*- [Bb]ackup.rdl
+*- [Bb]ackup ([0-9]).rdl
+*- [Bb]ackup ([0-9][0-9]).rdl
+
+# Microsoft Fakes
+FakesAssemblies/
+
+# GhostDoc plugin setting file
+*.GhostDoc.xml
+
+# Node.js Tools for Visual Studio
+# .ntvs_analysis.dat # Already covered by node_modules typically
+# node_modules/ # Already covered by a general Node section below
+
+# Visual Studio 6 build log
+*.plg
+
+# Visual Studio 6 workspace options file
+*.opt
+
+# Visual Studio 6 auto-generated workspace file (contains which files were open etc.)
+*.vbw
+
+# Visual Studio 6 auto-generated project file (contains which files were open etc.)
+*.vbp
+
+# Visual Studio 6 workspace and project file (working project files containing files to include in project)
+*.dsw
+*.dsp
+
+# Visual Studio 6 technical files
+# *.ncb # Covered by VS C++ cache
+# *.aps # Covered by VS C++ cache
+
+# Visual Studio LightSwitch build output
+**/*.HTMLClient/GeneratedArtifacts
+**/*.DesktopClient/GeneratedArtifacts
+**/*.DesktopClient/ModelManifest.xml
+**/*.Server/GeneratedArtifacts
+**/*.Server/ModelManifest.xml
+_Pvt_Extensions
+
+# Paket dependency manager
+.paket/paket.exe
+paket-files/
+
+# FAKE - F# Make
+.fake/
+
+# CodeRush personal settings
+.cr/personal
+
+# Python Tools for Visual Studio (PTVS)
+__pycache__/
+*.pyc
+
+# Cake - Uncomment if you are using it
+# tools/**
+# !tools/packages.config
+
+# Tabs Studio
+*.tss
+
+# Telerik's JustMock configuration file
+*.jmconfig
+
+# BizTalk build output
+*.btp.cs
+*.btm.cs
+*.odx.cs
+*.xsd.cs
+
+# OpenCover UI analysis results
+OpenCover/
+
+# Azure Stream Analytics local run output
+ASALocalRun/
+
+# MSBuild Binary and Structured Log
+*.binlog
+
+# AWS SAM Build and Temporary Artifacts folder
+.aws-sam
+
+# NVidia Nsight GPU debugger configuration file
+*.nvuser
+
+# MFractors (Xamarin productivity tool) working folder
+.mfractor/
+
+# Local History for Visual Studio
+.localhistory/
+
+# Visual Studio History (VSHistory) files
+.vshistory/
+
+# BeatPulse healthcheck temp database
+healthchecksdb
+
+# Backup folder for Package Reference Convert tool in Visual Studio 2017
+MigrationBackup/
+
+# Ionide (cross platform F# VS Code tools) working folder
+.ionide/
+
+# Fody - auto-generated XML schema
+FodyWeavers.xsd
+
+# VS Code files for those working on multiple tools
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+# Windows Installer files from build outputs
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# JetBrains Rider
+*.sln.iml
+
+#-----------------------------------------------------------------------------
+# NODE / JAVASCRIPT / TYPESCRIPT ADDITIONS
+#-----------------------------------------------------------------------------
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Directory for instrumented libs generated by jscoverage/JSCover
+lib-cov
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.mbcache/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarnclean
+
+# Next.js build outputs
+.next/
+out/
+
+# Nuxt.js build outputs
+.nuxt/
+dist/
+
+# Svelte build outputs (typically)
+__sapper__/
+.svelte-kit/
+
+# Gatsby build outputs
+.cache/
+public/
+
+# Parcel cache files
+.cache
+.parcel-cache
+
+# Docusaurus build outputs
+.docusaurus
+
+# Remix build outputs
+build/
+public/build/
+.cache/
+
+# Storybook build outputs
+storybook-static
+
+# MDMD Project Specific
+# Compiled TypeScript output
+dist/
+# TypeScript incremental build info
+tsconfig.tsbuildinfo
+# Any local test result artifacts (if we use specific names later)
+test-results/
+# AgentOps codebase dump files (can get large, not usually committed)
+AgentOps/*Dump.md
+
+```
+
+## .editorconfig
+
+```
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+```
+
+## package-lock.json
+
+```json
 {
   "name": "mdmd",
   "version": "0.1.0",
@@ -17,7 +860,6 @@
         "@types/node": "^20.12.12",
         "@typescript-eslint/eslint-plugin": "^7.10.0",
         "@typescript-eslint/parser": "^7.10.0",
-        "esbuild": "^0.25.5",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.1.3",
@@ -26,431 +868,6 @@
         "prettier": "^3.2.5",
         "typescript": "^5.4.5",
         "unist-builder": "^4.0.0"
-      }
-    },
-    "node_modules/@esbuild/aix-ppc64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.5.tgz",
-      "integrity": "sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA==",
-      "cpu": [
-        "ppc64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "aix"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/android-arm": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.5.tgz",
-      "integrity": "sha512-AdJKSPeEHgi7/ZhuIPtcQKr5RQdo6OO2IL87JkianiMYMPbCtot9fxPbrMiBADOWWm3T2si9stAiVsGbTQFkbA==",
-      "cpu": [
-        "arm"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "android"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/android-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.25.5.tgz",
-      "integrity": "sha512-VGzGhj4lJO+TVGV1v8ntCZWJktV7SGCs3Pn1GRWI1SBFtRALoomm8k5E9Pmwg3HOAal2VDc2F9+PM/rEY6oIDg==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "android"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/android-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.25.5.tgz",
-      "integrity": "sha512-D2GyJT1kjvO//drbRT3Hib9XPwQeWd9vZoBJn+bu/lVsOZ13cqNdDeqIF/xQ5/VmWvMduP6AmXvylO/PIc2isw==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "android"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/darwin-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.5.tgz",
-      "integrity": "sha512-GtaBgammVvdF7aPIgH2jxMDdivezgFu6iKpmT+48+F8Hhg5J/sfnDieg0aeG/jfSvkYQU2/pceFPDKlqZzwnfQ==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "darwin"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/darwin-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.5.tgz",
-      "integrity": "sha512-1iT4FVL0dJ76/q1wd7XDsXrSW+oLoquptvh4CLR4kITDtqi2e/xwXwdCVH8hVHU43wgJdsq7Gxuzcs6Iq/7bxQ==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "darwin"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/freebsd-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.5.tgz",
-      "integrity": "sha512-nk4tGP3JThz4La38Uy/gzyXtpkPW8zSAmoUhK9xKKXdBCzKODMc2adkB2+8om9BDYugz+uGV7sLmpTYzvmz6Sw==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "freebsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/freebsd-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.25.5.tgz",
-      "integrity": "sha512-PrikaNjiXdR2laW6OIjlbeuCPrPaAl0IwPIaRv+SMV8CiM8i2LqVUHFC1+8eORgWyY7yhQY+2U2fA55mBzReaw==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "freebsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-arm": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.5.tgz",
-      "integrity": "sha512-cPzojwW2okgh7ZlRpcBEtsX7WBuqbLrNXqLU89GxWbNt6uIg78ET82qifUy3W6OVww6ZWobWub5oqZOVtwolfw==",
-      "cpu": [
-        "arm"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.25.5.tgz",
-      "integrity": "sha512-Z9kfb1v6ZlGbWj8EJk9T6czVEjjq2ntSYLY2cw6pAZl4oKtfgQuS4HOq41M/BcoLPzrUbNd+R4BXFyH//nHxVg==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-ia32": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.25.5.tgz",
-      "integrity": "sha512-sQ7l00M8bSv36GLV95BVAdhJ2QsIbCuCjh/uYrWiMQSUuV+LpXwIqhgJDcvMTj+VsQmqAHL2yYaasENvJ7CDKA==",
-      "cpu": [
-        "ia32"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-loong64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.25.5.tgz",
-      "integrity": "sha512-0ur7ae16hDUC4OL5iEnDb0tZHDxYmuQyhKhsPBV8f99f6Z9KQM02g33f93rNH5A30agMS46u2HP6qTdEt6Q1kg==",
-      "cpu": [
-        "loong64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-mips64el": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.25.5.tgz",
-      "integrity": "sha512-kB/66P1OsHO5zLz0i6X0RxlQ+3cu0mkxS3TKFvkb5lin6uwZ/ttOkP3Z8lfR9mJOBk14ZwZ9182SIIWFGNmqmg==",
-      "cpu": [
-        "mips64el"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-ppc64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.25.5.tgz",
-      "integrity": "sha512-UZCmJ7r9X2fe2D6jBmkLBMQetXPXIsZjQJCjgwpVDz+YMcS6oFR27alkgGv3Oqkv07bxdvw7fyB71/olceJhkQ==",
-      "cpu": [
-        "ppc64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-riscv64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.25.5.tgz",
-      "integrity": "sha512-kTxwu4mLyeOlsVIFPfQo+fQJAV9mh24xL+y+Bm6ej067sYANjyEw1dNHmvoqxJUCMnkBdKpvOn0Ahql6+4VyeA==",
-      "cpu": [
-        "riscv64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-s390x": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.25.5.tgz",
-      "integrity": "sha512-K2dSKTKfmdh78uJ3NcWFiqyRrimfdinS5ErLSn3vluHNeHVnBAFWC8a4X5N+7FgVE1EjXS1QDZbpqZBjfrqMTQ==",
-      "cpu": [
-        "s390x"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/linux-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.5.tgz",
-      "integrity": "sha512-uhj8N2obKTE6pSZ+aMUbqq+1nXxNjZIIjCjGLfsWvVpy7gKCOL6rsY1MhRh9zLtUtAI7vpgLMK6DxjO8Qm9lJw==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "linux"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/netbsd-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.5.tgz",
-      "integrity": "sha512-pwHtMP9viAy1oHPvgxtOv+OkduK5ugofNTVDilIzBLpoWAM16r7b/mxBvfpuQDpRQFMfuVr5aLcn4yveGvBZvw==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "netbsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/netbsd-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.25.5.tgz",
-      "integrity": "sha512-WOb5fKrvVTRMfWFNCroYWWklbnXH0Q5rZppjq0vQIdlsQKuw6mdSihwSo4RV/YdQ5UCKKvBy7/0ZZYLBZKIbwQ==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "netbsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/openbsd-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.5.tgz",
-      "integrity": "sha512-7A208+uQKgTxHd0G0uqZO8UjK2R0DDb4fDmERtARjSHWxqMTye4Erz4zZafx7Di9Cv+lNHYuncAkiGFySoD+Mw==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "openbsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/openbsd-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.25.5.tgz",
-      "integrity": "sha512-G4hE405ErTWraiZ8UiSoesH8DaCsMm0Cay4fsFWOOUcz8b8rC6uCvnagr+gnioEjWn0wC+o1/TAHt+It+MpIMg==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "openbsd"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/sunos-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.25.5.tgz",
-      "integrity": "sha512-l+azKShMy7FxzY0Rj4RCt5VD/q8mG/e+mDivgspo+yL8zW7qEwctQ6YqKX34DTEleFAvCIUviCFX1SDZRSyMQA==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "sunos"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/win32-arm64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.25.5.tgz",
-      "integrity": "sha512-O2S7SNZzdcFG7eFKgvwUEZ2VG9D/sn/eIiz8XRZ1Q/DO5a3s76Xv0mdBzVM5j5R639lXQmPmSo0iRpHqUUrsxw==",
-      "cpu": [
-        "arm64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "win32"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/win32-ia32": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.25.5.tgz",
-      "integrity": "sha512-onOJ02pqs9h1iMJ1PQphR+VZv8qBMQ77Klcsqv9CNW2w6yLqoURLcgERAIurY6QE63bbLuqgP9ATqajFLK5AMQ==",
-      "cpu": [
-        "ia32"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "win32"
-      ],
-      "engines": {
-        "node": ">=18"
-      }
-    },
-    "node_modules/@esbuild/win32-x64": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.5.tgz",
-      "integrity": "sha512-TXv6YnJ8ZMVdX+SXWVBo/0p8LTcrUYngpWjvm91TMjjBQii7Oz11Lw5lbDV5Y0TzuhSJHwiH4hEtC1I42mMS0g==",
-      "cpu": [
-        "x64"
-      ],
-      "dev": true,
-      "license": "MIT",
-      "optional": true,
-      "os": [
-        "win32"
-      ],
-      "engines": {
-        "node": ">=18"
       }
     },
     "node_modules/@eslint-community/eslint-utils": {
@@ -1230,47 +1647,6 @@
       "license": "BSD-2-Clause",
       "funding": {
         "url": "https://github.com/fb55/entities?sponsor=1"
-      }
-    },
-    "node_modules/esbuild": {
-      "version": "0.25.5",
-      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.25.5.tgz",
-      "integrity": "sha512-P8OtKZRv/5J5hhz0cUAdu/cLuPIKXpQl1R9pZtvmHWQvrAUVd0UNIPT4IB4W3rNOqVO0rlqHmCIbSwxh/c9yUQ==",
-      "dev": true,
-      "hasInstallScript": true,
-      "license": "MIT",
-      "bin": {
-        "esbuild": "bin/esbuild"
-      },
-      "engines": {
-        "node": ">=18"
-      },
-      "optionalDependencies": {
-        "@esbuild/aix-ppc64": "0.25.5",
-        "@esbuild/android-arm": "0.25.5",
-        "@esbuild/android-arm64": "0.25.5",
-        "@esbuild/android-x64": "0.25.5",
-        "@esbuild/darwin-arm64": "0.25.5",
-        "@esbuild/darwin-x64": "0.25.5",
-        "@esbuild/freebsd-arm64": "0.25.5",
-        "@esbuild/freebsd-x64": "0.25.5",
-        "@esbuild/linux-arm": "0.25.5",
-        "@esbuild/linux-arm64": "0.25.5",
-        "@esbuild/linux-ia32": "0.25.5",
-        "@esbuild/linux-loong64": "0.25.5",
-        "@esbuild/linux-mips64el": "0.25.5",
-        "@esbuild/linux-ppc64": "0.25.5",
-        "@esbuild/linux-riscv64": "0.25.5",
-        "@esbuild/linux-s390x": "0.25.5",
-        "@esbuild/linux-x64": "0.25.5",
-        "@esbuild/netbsd-arm64": "0.25.5",
-        "@esbuild/netbsd-x64": "0.25.5",
-        "@esbuild/openbsd-arm64": "0.25.5",
-        "@esbuild/openbsd-x64": "0.25.5",
-        "@esbuild/sunos-x64": "0.25.5",
-        "@esbuild/win32-arm64": "0.25.5",
-        "@esbuild/win32-ia32": "0.25.5",
-        "@esbuild/win32-x64": "0.25.5"
       }
     },
     "node_modules/escape-string-regexp": {
@@ -3721,3 +4097,1510 @@
     }
   }
 }
+
+```
+
+## README.md
+
+```markdown
+# mdmd
+
+Membrane Design MarkDown (MDMD) is a strategy for specifying general solutions that utilizes a _bilayer_ of specifications: A "unit" layer (lower-level, 1:1 mapping from .md to implementation), and a "composition" layer (higher-level, many-to-many mapping). The specification is built specifically to enhance AI-assisted and AI-driven development.
+
+```
+
+## .prettierrc.js
+
+```javascript
+module.exports = {
+  printWidth: 100, // Max line length
+  tabWidth: 2, // Indent size
+  useTabs: false, // Use spaces instead of tabs
+  semi: true, // Print semicolons at the ends of statements
+  singleQuote: true, // Use single quotes instead of double quotes
+  trailingComma: 'es5', // Trailing commas where valid in ES5 (objects, arrays, etc.)
+  bracketSpacing: true, // Print spaces between brackets in object literals
+  arrowParens: 'always', // Always include parens around a sole arrow function parameter
+  endOfLine: 'lf', // Line ending
+};
+
+```
+
+## AgentOps/03_AGENT_TO_AGENT_CONVERSATION.md
+
+```markdown
+---
+title: AgentOps - Agent to Agent Conversation Log
+description: A log of messages exchanged between AI agents, facilitated by a human operator, for the Nucleus project.
+version: 1.0 
+date: 2025-05-19
+---
+
+# Agent to Agent Conversation
+
+Sometimes, AI agents need to get help from other AI agents. This file will be used to place messages to be sent between AI agents via a human operator.
+
+## Message 1: Cascade (Via User) to Gemini 2.5 Pro
+
+**Subject:** Full Codebase Review
+
+You are an AI with a 1 million token context window, enabling you to see for the first time an entire (young) codebase alongside its documentation, unabridged. This has opened up profound new methodologies for checking the logical consistency of a project, making sure all minds point in the same direction, toward the same shared goals.
+
+Our style of development is "docs-first", which is due to a unique agentic development style that emphasizes documentation as the primary source of truth for the codebase. This is a departure from the traditional "code-first" approach, where documentation is often seen as secondary or even secondary to code. This is noted to you so that you have a potential tie-breaker of authority when viewing internal inconsistencies of the codebase, which are expected to be present. 
+
+### Internal Consistency Check:
+
+Review the following codebase and documentation set, noting the unique docs-first agentic development style, and note anything you deem to be internally inconsistent, be it:
+- Internal disagreements from code files to code files
+- Internal disagreements from documentation from documentation
+- Internal disagreements from code files to documentation or vice versa
+
+### Technical Debt Review:
+
+Take note of any obvious to-do items, placeholders, workarounds, or other technical debt that needs accounting for. 
+
+### Informed Next Steps:
+
+Based on the completion state of the codebase and the documentation outlining the project vision, roadmap, and goals, outline the next steps for development.
+
+### Special Requests:
+
+{Special Requests}
+
+### Workspace file census:
+
+{Workspace File Census}
+
+### Codebase Dump:
+
+-
+--
+---
+----
+-----
+------
+-------
+
+{Codebase Dump}
+
+-------
+------
+-----
+----
+---
+--
+-
+
+## Message 2: Gemini 2.5 Pro to Cascade (Via User)
+
+{Message}
+
+---
+---
+
+## Message 3: Cascade to Gemini 2.5 Pro (Via User)
+
+Pass 2:
+
+You have correctly identified the large scale of the task given to you. This is a case where you are actually capable of improving your response by performing another round of reasoning, based on your first response. In doing so, you'll be able to revisit parts of the codebase with new focus. This will enable you to refine and expand your recommendations with substantial scale, depth, and accuracy (according to pre-publication results).
+
+It is possible that there were hallucinated file paths or other small inaccuracies in your last response, as this is a common stumbling point for LLMs overall. Please make sure to verify the accuracy of your response. 
+
+Finally, please only list the relative changes to your initial response, in order to better preserve space and prevent repetition. The initial response followed by any refinements will be supplied to an AI agent to bootstrap agentic development for the next steps. (You can see what was last being worked on in 02_CURRENT_SESSION_STATE.md). 
+
+---
+---
+
+## Message 4: Gemini 2.5 Pro to Cascade (Via User)
+
+{Message}
+
+---
+---
+
+## Message 5: Cascade to Gemini 2.5 Pro (Via User)
+
+Final Pass:
+
+This will be the last attempt given to you to inspect the full codebase and documentation set to refine, expand, and deepen your response. Utilize your latest findings to inform your choices of where to put your attention in this final pass. The "Grounding with Google Search" has been enabled for this final pass, in case you have any research or questions that require external sources, or any claims of fact that should be defined by an external citation. Thank you for your efforts. Your response will be used to bootstrap the next agentic development session (but may not include the messages before this as a means of preserving context, so you are encouraged to be comprehensive in the final response). 
+
+---
+---
+
+## Message 6: Gemini 2.5 Pro to Cascade (Via User)
+
+{Message}
+```
+
+## AgentOps/02_CURRENT_SESSION_STATE.md
+
+```markdown
+---
+title: 'Agent Session State - MDMD Project'
+description: "Tracks the current state of the agent's operations for developing the MDMD MyST plugin and specifications."
+version: '1.9' # Increment version
+date: 2025-05-31
+see_also:
+  - title: 'MDMD Methodology'
+    link: ../00_START_HERE_METHODOLOGY.md
+  - title: 'MDMD Project Context'
+    link: ../01_PROJECT_CONTEXT.md
+  - title: 'MDMD Specification v0.1'
+    link: ../../MDMD_Specification/MDMD.md
+---
+
+## Agent State - MDMD Project
+
+- **Agent Version:** GitHub Copilot
+- **LLM Used:** Copilot's internal model
+- **Current Overall Goal:** Implement core functionality for `unitDirective.ts` and `compositionDirective.ts`, focusing on robust Markdown/MyST string parsing and AST construction, resolving critical linting issues, and testing the directives.
+- **Current Focus Document:** `src/directives/compositionDirective.ts` and `src/directives/unitDirective.ts`.
+- **Action for Current Document:** 1. Check for and address any remaining critical linting/type issues in both directive files. 2. Perform a clean build and test execution.
+- **Overall Plugin Progress:** Project builds successfully. String parsing to AST is implemented in both directives. Awaiting final lint check and test run.
+
+## Log of Key Actions / Decisions / Issues (Newest First)
+
+- **2025-05-31 - User emphasized prioritizing expressive, readable code over strict stylistic linting. Will proceed with this guidance. User also noted manual edits to directive files; will re-read them.**
+- **2025-05-31 - User confirmed `npm run clean && npm run build` succeeds. Noted that a linting warning persists in `compositionDirective.ts`. Acknowledged user's concern about potential "co-hallucination" and will proceed based on direct evidence and tool outputs.**
+- 2025-05-31 - `compositionDirective.ts` is building successfully. The `mystParse(string) as Root` approach is confirmed. Applying this logic to `unitDirective.ts`.
+- 2025-05-31 - Continuing to address the `mystParse` "Unsafe call" error. The direct cast to `Root` in `compositionDirective.ts` resolved the build issue.
+- 2025-05-31 - Continuing to address the `mystParse` "Unsafe call" error. The current approach is to use a more explicit type definition for the imported `mystParse` function to aid TypeScript's type inference.
+- 2025-05-31 - User provided detailed plan from "Long Context Gemini" to address `mystParse` "Unsafe call" error. Investigated `unified` pipeline, but reverted to direct `mystParse` as it seems to be the intended API. `myst-parser` dependencies confirmed (`unified`, `markdown-it-myst`).
+- 2025-05-31 - User initiated a new set of tasks: 1. Refine `markdownlint.json`. 2. Implement `extractPrimaryCodeBlock` in `unitDirective.ts`. 3. Refine `unitDirective.ts` run function. 4. Refine `compositionDirective.ts` run function. 5. Update session state.
+- 2025-05-31 - Resolved TypeScript errors in `compositionDirective.ts` related to `mystParse` usage. Build is succeeding.
+- 2025-05-31 - Attempting to fix `mystParse` usage in `compositionDirective.ts`. Previous `VFile` attempt was incorrect; `mystParse` seems to expect a string. Addressing remaining type and linting errors.
+- 2025-05-31 - Still working on fixing TypeScript error `TS1005: 'from' expected` in `src/directives/compositionDirective.ts:12`.
+- 2025-05-31 - Identified TypeScript error `TS1005: 'from' expected` in `src/directives/compositionDirective.ts:12`. Current task is to fix this error.
+- 2025-05-31 - User initiated research into `myst-parser` for string-to-AST conversion. Tasked with updating `compositionDirective.ts` and `unitDirective.ts` with correct `mystParse` usage.
+- YYYY-MM-DD HH:MM - Initial session setup for MDMD plugin development.
+- ...
+
+## Agent Notes & Reminders (Focus for this Session)
+
+- **Primary Goal:** 1. Resolve critical linting/type warnings (especially "Unsafe call") in `compositionDirective.ts`. 2. Successfully parse `leadingMarkdown` and `trailingMarkdown` in `unitDirective.ts` using the `mystParse(string) as Root` pattern.
+- Prioritize code safety and correctness. Be more assertive with overly strict stylistic linting rules if they impede progress on core functionality.
+- After `unitDirective.ts` is updated and `compositionDirective.ts` is as clean as practically possible (focusing on safety), perform a clean build.
+- Crucially, capture and report the console output from `myst build test-doc.myst.md --html` to verify directive options and body parsing for both directives.
+
+## Immediate Next Step for AI Assistant
+
+1.  **Read `src/directives/compositionDirective.ts` (due to manual user edits).**
+2.  **Read `src/directives/unitDirective.ts` (due to manual user edits).**
+3.  **Get current linting/type warnings for `src/directives/compositionDirective.ts`.**
+4.  **Attempt to fix critical warnings (e.g., "Unsafe call") in `src/directives/compositionDirective.ts`.**
+5.  **Refine `src/directives/unitDirective.ts`:**
+    - Apply `mystParse(string) as Root` pattern for `leadingMarkdown` and `trailingMarkdown`.
+    - Ensure `Root` is imported from `mdast`.
+    - Correct `u` builder formatting for critical issues.
+6.  **Build & Test:**
+    - Run `npm run clean && npm run build`.
+    - If successful, run `myst build test-doc.myst.md --html`.
+    - Report build status and the full console output from `myst build`.
+7.  **Update Session State:** Reflect the outcome of build and test.
+
+```
+
+## AgentOps/01_PROJECT_CONTEXT.md
+
+```markdown
+---
+title: AgentOps - MDMD Project Context
+description: High-level project context for developing the MDMD MyST plugin, including vision, goals, and tech stack.
+version: 1.0
+date: 2025-05-31
+---
+
+# MDMD: Project Context (MyST Plugin Development)
+
+**Attention AI Assistant:** This document provides high-level context for the current phase of the **MDMD (Membrane Design MarkDown)** project: the development of a **MyST Markdown plugin package**. Refer to `MDMD_Specification/MDMD.md` for the core definition of MDMD, and `docs/Concepts/` for its philosophy and intent. **The primary source for your behavior and tool usage guidelines is `.github/copilot-instructions.md` in the project root.**
+
+## Vision & Goal (for this Phase)
+
+**Vision:** To create a MyST Markdown extension that enables users to specify complex systems using `{unit}` and `{composition}` primitives, facilitating human-AI collaboration in design and implementation across diverse domains.
+**Current Goal:** Develop a foundational MyST plugin (TypeScript/Deno 2 - TBD) that can parse `{unit}` and `{composition}` directives from `.myst.md` files into a well-defined Abstract Syntax Tree (AST) structure. This AST will then serve as the basis for LLM-driven interpretation, code generation, and specification analysis.
+
+## Key Technologies (for Plugin Development)
+
+- **Core Specification Language:** MDMD, as defined in `MDMD_Specification/MDMD.md`.
+- **Host Environment:** MyST Markdown (`mystmd` CLI). Our plugin must be loadable and executable by `mystmd`.
+- **Plugin Development Language:** **TypeScript** (investigating Deno 2 for the dev environment, with Node.js-compatible module output, OR fallback to Node.js/TypeScript if Deno interop is too complex for MyST plugins).
+- **Key MyST/Markdown Libraries:**
+  - `mystmd` plugin APIs (for defining directives, accessing parser utilities).
+  - `unist`/`mdast` conventions (as MyST AST is based on these).
+  - JavaScript/TypeScript AST manipulation utilities if needed.
+- **Development Environment:** VS Code, GitHub Copilot, Git.
+- **LLMs (as Consumers/Generators of MDMD, not for plugin code itself yet):** Gemini, OpenAI models, etc. The plugin enables LLMs to work with MDMD more effectively by providing a structured AST.
+
+## Architecture Snapshot (of the MyST Plugin)
+
+The plugin will:
+
+1.  Define new MyST directives: `{unit}` and `{composition}`.
+2.  Provide parsing logic for the options of these directives (e.g., `id`, `unit-type`, `composition-type`, `language`, `source-ref`).
+3.  Process the body of these directives, recognizing standard Markdown content and fenced code blocks (for `{unit}`) or Mermaid diagrams (for `{composition}`).
+4.  Construct corresponding nodes in the MyST AST, making the directive's options and processed body content programmatically accessible.
+    - Example `{unit}` AST node might have properties like `unitId`, `unitType`, `unitLanguage`, `unitSourceRef`, `codeBlockNode` (a standard MyST `code` node), and `descriptionNodes` (an array of standard MyST block content nodes).
+
+## Data Flow (MDMD File -> MyST Parser -> Our Plugin -> MyST AST)
+
+1.  User authors a `.myst.md` file containing `{unit}` and `{composition}` directives.
+2.  `mystmd` CLI parses the file.
+3.  When `mystmd` encounters our directives, it invokes our plugin's registered parsing logic.
+4.  Our plugin processes the directive's options and body.
+5.  Our plugin returns a new MyST AST node (or a modified subtree) representing the parsed MDMD directive.
+6.  This enriched AST is then available for further MyST processing (e.g., rendering, other transformations, or export as JSON for external tools like our future "Sync Engine").
+
+## Current Focus for Plugin Development
+
+Refer to `AgentOps/02_CURRENT_SESSION_STATE.md` for the specific task related to implementing or refining the MyST plugin. Initial tasks will focus on parsing the `{unit}` directive.
+
+```
+
+## AgentOps/00_START_HERE_METHODOLOGY.md
+
+```markdown
+---
+title: AgentOps - MDMD Development Methodology
+description: Supplementary AgentOps methodology for AI-assisted development for the MDMD project.
+version: 1.0
+date: 2025-05-31 
+---
+
+# AgentOps Methodology for MDMD
+
+## Introduction
+
+This document outlines supplementary AgentOps methodology for AI-assisted development used in the **MDMD (Membrane Design MarkDown)** project. **The primary source of specific rules and guidelines for the AI development assistant (currently GitHub Copilot) is the `.github/copilot-instructions.md` file in the project root.** This document provides additional project-specific context and workflow details relevant to developing MDMD itself (the MyST plugin and surrounding specifications/tooling).
+
+Following this process helps maintain context, track progress, and ensure efficient collaboration between human developers/leads and AI assistants. This methodology also serves as a framework for generating high-quality training data for future AI development agents.
+
+## Core Principles (Supplementary to `.github/copilot-instructions.md`)
+
+**(Review the foundational principles like Quality over Expedience, No Assumptions, Specification Rigor, Tool Usage defined in [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) first.)**
+
+1.  **Stateful Context Management**: Using dedicated documents (`01_PROJECT_CONTEXT.md`, `02_CURRENT_SESSION_STATE.md`) to preserve context for all collaborators (Human, Long Context Gemini, GitHub Copilot). Accurate state tracking is paramount.
+2.  **Incremental Progress Tracking**: Breaking work into manageable tasks and tracking the immediate focus (Session State).
+3.  **Structured Collaboration**: AI assistants use the provided state documents to understand the current focus and assist with the defined "Next Step", following specific interaction patterns. Human leads provide guidance, feedback, and validation.
+4.  **Continuous Documentation/Specification**: Updating state documents in real-time as progress is made. MDMD specifications (`{unit}` and `{composition}` directives) are the core artifacts being developed and refined.
+5.  **Adherence to MDMD Specification:** Development of the MDMD plugin and examples must align with the `MDMD_Specification/MDMD.md` document. For TypeScript/plugin development, adhere to modern best practices, SOLID principles, and effective use of MyST plugin APIs.
+6.  **Test-Driven Development (TDD) (Aspirational):** Aim to write tests for MyST plugin functionality where practical.
+7.  **TRACS Methodology for Document Reviews**: (Retained for awareness) From time to time, for large-scale reviews of MDMD specification files themselves, TRACS may be employed: Transform, Realign, Archive, Consolidate, Solidify.
+
+## Roles of Key AgentOps Files
+
+*   **`.github/copilot-instructions.md` (Project Root):** The primary authority for GitHub Copilot's behavior, core principles, and tool usage.
+*   **`MDMD_Specification/MDMD.md`**: The "Why & What" of MDMD itself. Core definition of `{unit}` and `{composition}`.
+*   **`docs/Concepts/CONCEPTS_MDMD_PHILOSOPHY.md` & `CONCEPTS_CORE_PRIMITIVES_INTENT.md`**: The philosophical underpinnings and goals.
+*   **`00_START_HERE_METHODOLOGY.md` (This file):** Supplementary workflow details.
+*   **`01_PROJECT_CONTEXT.md`**: The "What" for the current development effort (e.g., building the MyST plugin). Provides stable, high-level technical context: goals, tech stack for the plugin (TypeScript, MyST APIs), architectural summary of the plugin.
+*   **`02_CURRENT_SESSION_STATE.md`**: The "Now". Captures the **microstate**. Dynamic and updated frequently. Details the *specific task*, *last action*, relevant *code*, *errors/blockers*, and the *immediate next step*. **This is your primary focus.**
+*   **`03_AGENT_TO_AGENT_CONVERSATION.md`**: Retained as a template for structured multi-pass LLM interactions if needed for complex analysis or generation tasks related to MDMD development.
+
+## Workflow Process
+
+1.  **Session Start:** Developer/Lead shares `02_CURRENT_SESSION_STATE.md` (and potentially others like `01_PROJECT_CONTEXT.md` or `MDMD_Specification/MDMD.md`) with the AI. AI reviews state, context, and plan.
+2.  **Task Execution:** Focus on the **Immediate Next Step** defined in `02_CURRENT_SESSION_STATE.md`. GitHub Copilot assists with file modifications, TypeScript code generation for the MyST plugin, debugging, analysis, etc., **following the guidelines in `.github/copilot-instructions.md`**.
+3.  **Code Modification:** Use the `edit_file` tool according to guidelines.
+4.  **Check Current State:** Read `02_CURRENT_SESSION_STATE.md` carefully.
+5.  **State Update:** Crucially, GitHub Copilot must accurately update `02_CURRENT_SESSION_STATE.md` as the first action ('Step Zero') of its turn.
+6.  **Specification Development:** MDMD files using `{unit}` and `{composition}` will be created and refined. Adhere to `MDMD_Specification/MDMD.md`.
+
+## Nagging Thoughts / Best Practices (To Consider Alongside `.github/copilot-instructions.md`)
+
+1.  **Correctness & Alignment:** Ask: "Does this change align with `01_PROJECT_CONTEXT.md` (for the plugin dev), `MDMD_Specification/MDMD.md`, and the core principles in `.github/copilot-instructions.md`?"
+2.  **Avoid Technical Debt in Plugin:** Prioritize clean, maintainable TypeScript code for the MyST plugin.
+3.  **Robust Plugin Solutions:** Ask: "Is this MyST plugin code robust? Does it handle AST manipulation correctly? Does it align with MyST plugin best practices?"
+4.  **Simplicity & Clarity in Plugin Code.**
+5.  **Use Tools Correctly.**
+6.  **Update State Documents.**
+
+By adhering to this methodology and `.github/copilot-instructions.md`, you will significantly contribute to the successful development of the MDMD MyST plugin and its surrounding specifications.
+```
+
+## AgentOps/Scripts/tree_gitignore.py
+
+```python
+import os
+import argparse
+from pathlib import Path
+import pathspec
+
+def find_gitignore(start_path):
+    """Find the .gitignore file in the start_path or its parents."""
+    current_path = Path(start_path).resolve()
+    while True:
+        gitignore_path = current_path / '.gitignore'
+        if gitignore_path.is_file():
+            return gitignore_path
+        parent = current_path.parent
+        if parent == current_path: # Reached root
+            return None
+        current_path = parent
+
+def load_gitignore_patterns(gitignore_path):
+    """Load patterns from a .gitignore file."""
+    if not gitignore_path:
+        return []
+    with open(gitignore_path, 'r') as f:
+        return [line for line in f.read().splitlines() if line and not line.strip().startswith('#')]
+
+def build_tree(directory, spec, gitignore_root, prefix=''):
+    """Recursively build the directory tree string."""
+    current_dir_path = Path(directory).resolve()
+    try:
+        # Get absolute paths first
+        items_abs = sorted(list(current_dir_path.iterdir()), key=lambda x: (x.is_file(), x.name.lower()))
+    except PermissionError:
+        print(f"{prefix}└── [ACCESS DENIED] {current_dir_path.name}/")
+        return
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {current_dir_path}")
+        return
+
+    # Filter items based on .gitignore spec using paths relative to gitignore_root
+    filtered_items_abs = [
+        item_abs for item_abs in items_abs
+        if not spec.match_file(str(item_abs.relative_to(gitignore_root)))
+    ]
+
+    pointers = ['├── ' for _ in range(len(filtered_items_abs) - 1)] + ['└── ']
+
+    for pointer, item_abs_path in zip(pointers, filtered_items_abs):
+        print(f"{prefix}{pointer}{item_abs_path.name}{'/' if item_abs_path.is_dir() else ''}")
+
+        if item_abs_path.is_dir():
+            extension = '│   ' if pointer == '├── ' else '    '
+            # Pass gitignore_root down recursively
+            build_tree(item_abs_path, spec, gitignore_root, prefix=prefix + extension)
+
+def main():
+    parser = argparse.ArgumentParser(description='List directory contents like tree, respecting .gitignore.')
+    parser.add_argument('directory', nargs='?', default='.', help='The directory to list (default: current directory)')
+    args = parser.parse_args()
+
+    start_dir = Path(args.directory).resolve()
+
+    if not start_dir.is_dir():
+        print(f"Error: '{start_dir}' is not a valid directory.")
+        return
+
+    gitignore_path = find_gitignore(start_dir)
+    gitignore_root = gitignore_path.parent if gitignore_path else start_dir # Use start_dir if no gitignore found
+    patterns = load_gitignore_patterns(gitignore_path)
+    # Add default git ignores
+    patterns.extend(['.git'])
+    # Ensure patterns containing '/' are treated correctly relative to the root
+    spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, patterns)
+
+    print(f"{start_dir.name}/ ({gitignore_root})") # Show which root is used
+    build_tree(start_dir, spec, gitignore_root)
+
+if __name__ == "__main__":
+    main()
+
+```
+
+## AgentOps/Scripts/codebase_to_markdown.py
+
+```python
+import os
+import argparse
+import fnmatch
+import re
+from pathlib import Path
+
+# --- Binary/Non-text file extensions to exclude ---
+BINARY_EXTENSIONS = {
+    # Images
+    '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.ico', '.webp', '.tiff', '.tif',
+    # Videos
+    '.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v',
+    # Audio
+    '.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a',
+    # Archives
+    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz',
+    # Documents
+    '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+    # Executables
+    '.exe', '.dll', '.so', '.dylib', '.bin', '.app', '.deb', '.rpm', '.msi',
+    # Fonts
+    '.ttf', '.otf', '.woff', '.woff2', '.eot',
+    # Database
+    '.db', '.sqlite', '.sqlite3', '.mdb',
+    # Other binary formats
+    '.iso', '.img', '.dmg', '.toast', '.vcd'
+}
+
+def is_binary_file(file_path):
+    """Check if a file is likely binary based on extension or content."""
+    # Check extension first
+    if file_path.suffix.lower() in BINARY_EXTENSIONS:
+        return True
+    
+    # For files without clear extensions, check if content is binary
+    try:
+        with open(file_path, 'rb') as f:
+            chunk = f.read(1024)  # Read first 1KB
+            if b'\0' in chunk:  # Null bytes typically indicate binary
+                return True
+            # Check for high ratio of non-printable characters
+            text_chars = bytearray({7,8,9,10,12,13,27} | set(range(0x20, 0x100)) - {0x7f})
+            if chunk and len(chunk.translate(None, text_chars)) / len(chunk) > 0.30:
+                return True
+    except (IOError, OSError):
+        # If we can't read the file, assume it might be binary
+        return True
+    
+    return False
+
+# --- Language Mappings (can be extended) ---
+LANGUAGE_MAP = {
+    '.py': 'python',
+    '.js': 'javascript',
+    '.ts': 'typescript',
+    '.tsx': 'typescript',
+    '.java': 'java',
+    '.cs': 'csharp',
+    '.fs': 'fsharp',
+    '.vb': 'vbnet',
+    '.go': 'go',
+    '.rs': 'rust',
+    '.c': 'c',
+    '.cpp': 'cpp',
+    '.h': 'cpp', # Often used with C/C++
+    '.html': 'html',
+    '.css': 'css',
+    '.scss': 'scss',
+    '.less': 'less',
+    '.xml': 'xml',
+    '.json': 'json',
+    '.yaml': 'yaml',
+    '.yml': 'yaml',
+    '.sh': 'bash',
+    '.bash': 'bash',
+    '.zsh': 'bash',
+    '.ps1': 'powershell',
+    '.psm1': 'powershell',
+    '.psd1': 'powershell',
+    '.rb': 'ruby',
+    '.php': 'php',
+    '.sql': 'sql',
+    '.md': 'markdown',
+    '.txt': '', # Plain text
+    '.gitignore': 'ignore',
+    '.gitattributes': 'ignore',
+    'Dockerfile': 'dockerfile',
+    # Add more as needed
+}
+
+def get_language_hint(file_path):
+    """Gets a language hint for Markdown code blocks based on file extension."""
+    suffix = file_path.suffix.lower()
+    if suffix in LANGUAGE_MAP:
+        return LANGUAGE_MAP[suffix]
+    # Handle files with no extension but specific names
+    if file_path.name in LANGUAGE_MAP:
+        return LANGUAGE_MAP[file_path.name]
+    return '' # Default to plain text or no hint
+
+def parse_gitignore(gitignore_path):
+    """Parses a .gitignore file and returns a list of patterns."""
+    patterns = []
+    if not gitignore_path.is_file():
+        return patterns
+    try:
+        with open(gitignore_path, 'r', encoding='utf-8', errors='ignore') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    patterns.append(line)
+    except Exception as e:
+        print(f"Warning: Could not read gitignore {gitignore_path}: {e}")
+    return patterns
+
+def get_gitignore_patterns(directory):
+    """Finds all .gitignore files from the directory up to the root and returns patterns."""
+    all_patterns = {} # Dict[Path, List[str]] storing patterns per gitignore file dir
+    current_dir = Path(directory).resolve()
+    root = Path(current_dir.anchor)
+
+    while True:
+        gitignore_file = current_dir / '.gitignore'
+        if gitignore_file.is_file():
+            if gitignore_file.parent not in all_patterns: # Avoid redundant parsing if nested
+                 patterns = parse_gitignore(gitignore_file)
+                 if patterns:
+                     print(f"DEBUG: Found .gitignore: {gitignore_file} with {len(patterns)} patterns")
+                     all_patterns[gitignore_file.parent] = patterns # Store patterns relative to their dir
+        if current_dir == root:
+            break
+        parent = current_dir.parent
+        if parent == current_dir: # Should not happen, but safeguard
+             break
+        current_dir = parent
+    return all_patterns
+
+
+def matches_gitignore(relative_path_posix, gitignore_patterns_map):
+    """Checks if a relative path matches any gitignore patterns from relevant directories."""
+    path_obj = Path(relative_path_posix)
+    # Check patterns from parent directories downwards
+    for gitignore_dir, patterns in gitignore_patterns_map.items():
+        try:
+            # Check if the file path is within or below the gitignore_dir
+            # We need the relative path of the file *to the gitignore dir*
+            relative_to_gitignore_dir = path_obj.relative_to(gitignore_dir.relative_to(Path('.').resolve())).as_posix()
+        except ValueError:
+            # The file is not under this gitignore's directory scope
+            continue
+
+        for pattern in patterns:
+            # Basic fnmatch implementation (doesn't cover all gitignore nuances like !)
+            # Handle directory matching (pattern ending with /)
+            is_dir_pattern = pattern.endswith('/')
+            match_pattern = pattern.rstrip('/')
+
+            # A pattern without '/' can match a file or directory
+            # A pattern with '/' only matches a directory
+            # Need to check against the path string and potentially its parts
+
+            # Simplistic matching for now:
+            if fnmatch.fnmatch(relative_to_gitignore_dir, match_pattern) or \
+               fnmatch.fnmatch(relative_to_gitignore_dir, match_pattern + '/*') or \
+               any(fnmatch.fnmatch(part, match_pattern) for part in Path(relative_to_gitignore_dir).parts): # Match any segment
+                # Refine directory matching
+                if is_dir_pattern:
+                     # Check if the match is actually for a directory segment
+                     if Path(relative_to_gitignore_dir).is_dir() or (match_pattern in Path(relative_to_gitignore_dir).parts): # Heuristic
+                         print(f"DEBUG: Gitignored (DIR pattern '{pattern}'): {relative_path_posix}")
+                         return True
+                else:
+                    print(f"DEBUG: Gitignored (pattern '{pattern}'): {relative_path_posix}")
+                    return True
+    return False
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Dump codebase structure and content to a Markdown file.")
+    parser.add_argument("-s", "--source", required=True, help="Source directory to scan.")
+    parser.add_argument("-o", "--output", required=True, help="Output Markdown file path.")
+    parser.add_argument("-e", "--exclude", nargs='*', default=['.git', '.vscode', '.idea', 'bin', 'obj', 'node_modules'],
+                        help="Directory names to exclude (exact match). Example: bin obj")
+    parser.add_argument("-ep", "--exclude-patterns", nargs='*', 
+                        default=[
+                            '**/Examples/*',
+                            '**/Library-References/*',
+                            '**/Archive/*'
+                            ],
+                        help="Glob patterns for paths to exclude (relative to source). Example: '**/temp/*' '*.log'")
+    parser.add_argument("-f", "--force", action="store_true", help="Overwrite output file if it exists.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output.")
+
+    args = parser.parse_args()
+
+    source_dir = Path(args.source).resolve()
+    output_file = Path(args.output).resolve()
+    exclude_dirs = set(args.exclude)
+    exclude_patterns = args.exclude_patterns # Store the patterns
+    verbose = args.verbose
+
+    if not source_dir.is_dir():
+        print(f"Error: Source directory '{source_dir}' not found or is not a directory.")
+        return
+
+    if output_file.exists() and not args.force:
+        print(f"Error: Output file '{output_file}' already exists. Use --force to overwrite.")
+        return
+
+    # Ensure output directory exists
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    print(f"Source Directory: {source_dir}")
+    print(f"Output File: {output_file}")
+    print(f"Exclude Dirs: {', '.join(exclude_dirs)}")
+    print(f"Exclude Patterns: {', '.join(exclude_patterns)}") # Print the patterns
+
+    # --- Gitignore Handling ---
+    print("Collecting .gitignore patterns...")
+    gitignore_map = get_gitignore_patterns(source_dir)
+    print(f"Found patterns in {len(gitignore_map)} .gitignore files.")
+
+    processed_count = 0
+    skipped_excluded_dir = 0
+    skipped_gitignore = 0
+    skipped_read_error = 0
+    skipped_output_file = 0 # Added counter for the output file itself
+    skipped_pattern_exclude = 0 # Added counter for pattern excludes
+
+    try:
+        with open(output_file, 'w', encoding='utf-8') as md_file:
+            md_file.write(f"# Code Dump: {source_dir.name}\n\n")
+            md_file.write(f"*Generated on: {Path().cwd().name}*\n\n") # Simple timestamp marker
+
+            for root, dirs, files in os.walk(source_dir, topdown=True):
+                current_dir_path = Path(root)
+                relative_dir_path = current_dir_path.relative_to(source_dir)
+
+                # --- Directory Exclusion ---
+                # Modify dirs in-place to prevent os.walk from descending
+                original_dirs = list(dirs) # Copy before filtering
+                dirs_to_remove_std_exclude = {d for d in dirs if d in exclude_dirs or d.startswith('.')}
+                dirs_to_remove_gitignore = set()
+                dirs_to_remove_pattern = set() # Set for pattern excluded dirs
+
+                dirs[:] = [d for d in dirs if d not in dirs_to_remove_std_exclude]
+
+                # Filter remaining dirs based on gitignore and patterns
+                for d in list(dirs): # Iterate over a copy while potentially modifying dirs
+                    dir_rel_path = relative_dir_path / d
+                    dir_rel_path_posix = dir_rel_path.as_posix().replace('\\', '/')
+
+                    # Check exclude patterns
+                    matched_by_exclude_pattern = False
+                    offending_pattern_for_log = "" # For logging
+                    for current_pattern_original in exclude_patterns:
+                        pattern_to_test_against_dir = current_pattern_original
+                        if pattern_to_test_against_dir.endswith('/*'):
+                            pattern_to_test_against_dir = pattern_to_test_against_dir[:-2] # e.g., from "**/foo/*" to "**/foo"
+                        elif pattern_to_test_against_dir.endswith('/'):
+                            pattern_to_test_against_dir = pattern_to_test_against_dir[:-1] # e.g., from "**/foo/" to "**/foo"
+                        
+                        # Initial match attempt
+                        current_match_result = fnmatch.fnmatch(dir_rel_path_posix, pattern_to_test_against_dir)
+
+                        # If the initial match fails, and the pattern is like "**/dirname",
+                        # and the path is a simple name (no slashes, e.g. "dirname"),
+                        # then try matching against the "dirname" part of the pattern.
+                        if not current_match_result and \
+                           pattern_to_test_against_dir.startswith('**/') and \
+                           '/' not in dir_rel_path_posix:
+                            simplified_target_pattern = pattern_to_test_against_dir[3:] # Remove "**/"
+                            if verbose:
+                                print(f"DEBUG_FNMATCH_DIR (Alt Attempt): Testing dir='{dir_rel_path_posix}' vs simplified_target_pattern='{simplified_target_pattern}' from original_pattern='{current_pattern_original}'")
+                            if fnmatch.fnmatch(dir_rel_path_posix, simplified_target_pattern):
+                                current_match_result = True
+                        
+                        if verbose:
+                            # Log the original test attempt's details clearly
+                            print(f"DEBUG_FNMATCH_DIR: Testing dir_path='{dir_rel_path_posix}' against pattern_to_test='{pattern_to_test_against_dir}' (original_pattern='{current_pattern_original}'). Final Match Result: {current_match_result}")
+                        
+                        if current_match_result:
+                            matched_by_exclude_pattern = True
+                            offending_pattern_for_log = current_pattern_original
+                            break
+                    
+                    if matched_by_exclude_pattern:
+                        dirs_to_remove_pattern.add(d)
+                        if verbose: 
+                            print(f"Skipping excluded pattern directory: {dir_rel_path_posix} (due to pattern: '{offending_pattern_for_log}')")
+                        skipped_pattern_exclude += 1
+                        continue # Skip gitignore check if already pattern-excluded
+
+                    # Check gitignore
+                    if matches_gitignore(dir_rel_path_posix, gitignore_map):
+                        dirs_to_remove_gitignore.add(d)
+                        # Verbose reporting for gitignore is handled within matches_gitignore
+                        # if verbose: print(f"Skipping gitignored directory: {dir_rel_path_posix}")
+                        skipped_gitignore += 1 # Count handled here
+
+                # Report skipped standard excludes
+                for skipped_dir in dirs_to_remove_std_exclude:
+                     if verbose: print(f"Skipping standard excluded directory: {(relative_dir_path / skipped_dir).as_posix()}")
+                     skipped_excluded_dir += 1
+
+                # Update dirs list for os.walk
+                dirs[:] = [d for d in dirs if d not in dirs_to_remove_gitignore and d not in dirs_to_remove_pattern]
+
+
+                # --- File Processing ---
+                for filename in files:
+                    file_path = current_dir_path / filename
+                    relative_path = file_path.relative_to(source_dir)
+                    relative_path_posix = relative_path.as_posix().replace('\\', '/') # Use forward slashes for gitignore
+
+                    # --- Skip the output file itself ---
+                    if file_path == output_file:
+                        if verbose: print(f"Skipping output file itself: {relative_path_posix}")
+                        skipped_output_file += 1
+                        continue
+
+                    # --- Skip binary files ---
+                    if is_binary_file(file_path):
+                        if verbose: print(f"Skipping binary file: {relative_path_posix}")
+                        skipped_read_error += 1  # Count as read error for simplicity
+                        continue
+
+                    # Check standard exclusions first (e.g., if a file is in an excluded dir name like 'bin')
+                    if any(part in exclude_dirs for part in relative_path.parts):
+                        if verbose: print(f"Skipping excluded file (in standard excluded path): {relative_path_posix}")
+                        skipped_excluded_dir +=1 # Count doesn't distinguish file/dir well here
+                        continue
+
+                    # Check exclude patterns
+                    offending_pattern_for_file_log = ""
+                    file_matches_exclude_pattern = False
+                    for current_pattern in exclude_patterns:
+                        if fnmatch.fnmatch(relative_path_posix, current_pattern):
+                            offending_pattern_for_file_log = current_pattern
+                            file_matches_exclude_pattern = True
+                            break
+                    
+                    if file_matches_exclude_pattern:
+                        if verbose: 
+                            print(f"Skipping excluded pattern file: '{relative_path_posix}' (due to pattern: '{offending_pattern_for_file_log}')")
+                        skipped_pattern_exclude += 1
+                        continue
+
+                    # Check gitignore
+                    if matches_gitignore(relative_path_posix, gitignore_map):
+                        if verbose: print(f"Skipping gitignored file: {relative_path_posix}")
+                        skipped_gitignore += 1
+                        continue
+
+                    # Read and write content
+                    if verbose: print(f"Processing file: {relative_path_posix}")
+                    try:
+                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f_content:
+                            content = f_content.read()
+
+                        lang_hint = get_language_hint(file_path)
+                        md_file.write(f"## {relative_path_posix}\n\n")
+                        md_file.write(f"```{lang_hint}\n")
+                        md_file.write(content)
+                        md_file.write(f"\n```\n\n")
+                        processed_count += 1
+
+                    except Exception as e:
+                        print(f"Warning: Could not read file {file_path}: {e}")
+                        skipped_read_error += 1
+
+    except Exception as e:
+        print(f"Error writing to output file {output_file}: {e}")
+        return
+
+    print("\nScript finished.")
+    print(f" - Files dumped: {processed_count}")
+    total_skipped = skipped_excluded_dir + skipped_gitignore + skipped_read_error + skipped_output_file + skipped_pattern_exclude # Add pattern skips to total
+    print(f" - Total items skipped: {total_skipped}")
+    print(f"   - Skipped (Standard Exclude Dir/Path): {skipped_excluded_dir}")
+    print(f"   - Skipped (Exclude Pattern): {skipped_pattern_exclude}") # Added summary line for patterns
+    print(f"   - Skipped (.gitignore): {skipped_gitignore}")
+    print(f"   - Skipped (Output File): {skipped_output_file}")
+    print(f"   - Skipped (Read Error): {skipped_read_error}")
+    print(f"Output written to: {output_file}")
+
+if __name__ == "__main__":
+    main()
+
+```
+
+## AgentOps/Stories/00_STORY_INITIAL_PROJECT_SETUP.md
+
+```markdown
+{No Content Yet}
+
+```
+
+## MDMD_Specification/MDMD.md
+
+```markdown
+# MDMD (Membrane Design MarkDown) Specification v0.1
+
+## 1. Abstract
+
+MDMD (Membrane Design MarkDown) is a system for specifying complex solutions. It utilizes MyST Markdown extended with two core directives: `{unit}` and `{composition}`. MDMD facilitates a layered approach to design, moving from concrete, implementable details to higher-level conceptual architectures. It is designed for collaborative creation by humans and AI, aiming for clarity, traceability, and the potential for bi-directional synchronization between specifications and their real-world implementations (e.g., source code, configuration files, physical designs).
+
+## 2. Core Primitives (The Bilayer Model)
+
+MDMD defines two primary structural directives, forming a conceptual "bilayer":
+
+### 2.1. The `{unit}` Directive
+
+- **Purpose:** Represents a fundamental, discrete, and specifiable building block of a system. It defines the _contract_ or _declaration_ of an atomic part. This is the "Inner Leaflet" of the MDMD bilayer, interfacing closely with concrete implementation details.
+- **Syntax:**
+
+  ```myst
+  ::: {unit}
+  id: "unique-identifier-for-this-unit"
+  unit-type: "string-tag-describing-the-unit-kind"
+  language: "relevant-language-of-content-block"
+  status: "idea | draft | review | stable | deprecated"
+  version: "string-version-identifier"
+  brief: "One-line concise summary of the unit's purpose."
+  source-ref: "./path/to/linked/source/file.ext"
+  see-also: ["[[other-id]]", "../another-doc.md#section"]
+
+  (Optional) Free-form Markdown text providing human-readable explanations,
+  context, rationale, examples, or specific notes for AI interpretation
+  regarding the content block. This section can use any standard MyST Markdown
+  features, including lists, admonitions, and links to other `{unit}`s
+  or `{composition}`s (e.g., `[[target-id]]`).
+
+  \`\`\`[language-identifier-from-option-or-specific-to-content]
+  // The core formal definition or content of the unit.
+  // Examples: API signatures, data structure definitions, configuration snippets,
+  // textual requirements, material specifications, ingredient lists.
+  // The interpretation of this block is heavily guided by the `unit-type`
+  // and `language` options.
+  \`\`\`
+
+  (Optional) Further Markdown explanation or examples.
+  :::
+  ```
+
+- **Key Option Interpretation:**
+  - `id` (String, Required): Globally unique identifier. Primary target for `[[id]]` links.
+  - `unit-type` (String, Required, Open Tag): **Crucial semantic hint.** Guides interpretation of the content block. Examples: `c-function-signature`, `csharp-class-interface`, `python-module-api`, `yaml-k8s-deployment`, `json-schema-definition`, `architectural-principle`, `user-requirement`. (This list is exemplary, not exhaustive; the system is open to new `unit-type` tags.)
+  - `language` (String, Optional): The primary language of the main content block (e.g., "csharp", "python", "yaml", "json", "markdown", "natural-english").
+  - `source-ref` (String, Optional, Path): A link to an external source file this unit describes or is derived from. Essential for bi-directional synchronization tasks.
+- **Body Content Interpretation:** The fenced code block (or primary content block if `language` is `markdown` or `natural-english`) contains the formal definition. Surrounding Markdown provides context.
+
+### 2.2. The `{composition}` Directive
+
+- **Purpose:** Represents how `{unit}`s and/or other `{composition}`s are assembled, interact, or are conceptually grouped. It describes larger system parts, architectures, processes, or conceptual frameworks. This is the "Outer Leaflet" of the MDMD bilayer, focused on relationships and higher-level understanding.
+- **Syntax:**
+
+  ```myst
+  ::: {composition}
+  id: "unique-identifier-for-this-composition"
+  composition-type: "string-tag-describing-the-composition-kind"
+  status: "idea | draft | review | stable | deprecated"
+  version: "string-version-identifier"
+  brief: "One-line concise summary of the composition's purpose."
+  see-also: ["[[other-id]]", "../another-doc.md#section"]
+
+  Rich Markdown content forms the body. This typically includes:
+  - Prose explanations of purpose, design, rationale.
+  - **Explicit `[[id]]` links** to constituent `{unit}`s and sub-`{composition}`s, forming a navigable graph.
+  - Embedded diagrams (e.g., MermaidJS: `sequenceDiagram`, `graph TD`, `classDiagram`, `stateDiagram`, `erDiagram`) illustrating structures and interactions. `Ref: [[id]]` annotations within diagram elements are encouraged for linking.
+  - Lists of principles, requirements, or interaction steps.
+  :::
+  ```
+
+- **Key Option Interpretation:**
+  - `id` (String, Required): Globally unique identifier. Primary target for `[[id]]` links.
+  - `composition-type` (String, Required, Open Tag): **Crucial semantic hint.** Guides interpretation of the content. Examples: `logical-software-module`, `system-data-flow-diagram`, `api-usage-scenario`, `deployment-architecture-overview`, `user-story-map`, `project-phase-definition`. (Exemplary, not exhaustive.)
+- **Body Content Interpretation:** The body is free-form MyST Markdown. Its primary purpose is to describe the assembly and interaction of its referenced components. Diagrams and explicit `[[id]]` links are key structural elements.
+
+## 3. Core Principles for MDMD Interpretation & Generation
+
+- **Primacy of `*-type` Attributes:** `unit-type` and `composition-type` are the strongest signals for understanding the nature and expected content of a directive.
+- **Content Blocks are Ground Truth for Contracts:** In `{unit}`s defining implementable artifacts, the fenced code block is the primary source of the formal contract.
+- **Markdown Body for Context and Nuance:** Use the surrounding Markdown within directives to provide essential explanations, rationale, examples, and any specific guidance for processing or interpretation.
+- **Links (`[[id]]`) Create the System Graph:** All `[[id]]` references should be resolvable to other `{unit}` or `{composition}` directives within the specification set. These links define the system's structure and dependencies.
+- **Diagrams Enhance Understanding:** MermaidJS (or other MyST-compatible diagrams) within `{composition}`s should visually represent the relationships between linked elements, ideally using `Ref: [[id]]` annotations.
+- **Open Vocabulary for `*-type`:** While conventions for common `unit-type` and `composition-type` values will emerge and should be preferred for consistency, the system allows for new, descriptive tags as needed by the domain being specified.
+- **Bi-Directional Intent:**
+  - **MDMD-to-Implementation:** `{unit}` directives, especially those with code blocks and relevant `unit-type`s, can serve as precise specifications for generating code stubs, configuration files, or other artifacts. `{composition}` directives provide context for how these units should be integrated.
+  - **Implementation-to-MDMD:** Existing code, configurations, or other artifacts can be analyzed to generate corresponding MDMD `{unit}` directives. Relationships and interactions can be summarized into `{composition}` directives. The `source-ref` in a `{unit}` is critical for this linkage.
+
+## 4. Example Task: Generating a C# Class Stub from an MDMD `{unit}`
+
+Given an MDMD `{unit}`:
+
+```myst
+::: {unit}
+id: "user-service-interface"
+unit-type: "csharp-interface-definition"
+language: "csharp"
+brief: "Defines the contract for user management operations."
+
+This interface provides methods for creating, retrieving, and updating user data.
+
+\`\`\`csharp
+public interface IUserService
+{
+    Task<UserDto?> GetUserAsync(string userId);
+    Task<UserDto> CreateUserAsync(CreateUserRequest request);
+    Task<bool> UpdateUserAsync(string userId, UpdateUserRequest request);
+}
+\`\`\`
+:::
+```
+
+The expected output would be a C# interface file. The properties of `UserDto`, `CreateUserRequest`, etc., would ideally be defined in their own linked `{unit}` directives with `unit-type="csharp-dto-definition"`.
+
+## 5. Example Task: Generating an MDMD `{unit}` from a C Function Signature
+
+Given a C function: `int process_data(const char* input, char* output, size_t max_len); // Processes input data and writes to output.`
+An expected MDMD `{unit}` might be:
+
+```myst
+::: {unit}
+id: "c-func-process-data"
+unit-type: "c-function-signature"
+language: "c"
+brief: "Processes input data and writes to an output buffer."
+source-ref: "./src/data_processor.c#L52" // Example link to source
+
+Processes the null-terminated `input` string and writes the result to the `output`
+buffer, ensuring not to exceed `max_len`.
+
+\`\`\`c
+int process_data(const char* input, char* output, size_t max_len);
+\`\`\`
+
+**Parameters:**
+*   `input` (const char*): The input data to process.
+*   `output` (char*): The buffer to write processed data to.
+*   `max_len` (size_t): The maximum number of bytes to write to `output`.
+**Returns:**
+*   (int): 0 on success, non-zero on error.
+:::
+```
+
+This MDMD Specification Document provides the foundational rules for interpreting and generating MDMD content.
+
+```
+
+## MDMD_Specification/Primitives/CompositionDirective.myst.md
+
+```markdown
+::: {composition}
+id: "mdmd-primitive-composition-directive-spec"
+composition-type: "language-primitive-specification"
+status: "draft"
+version: "0.1"
+brief: "Specification for the MDMD '{composition}' directive."
+see-also: ["[[mdmd-spec-main]]", "[[mdmd-concept-composition-intent]]", "[[mdmd-primitive-unit-directive-spec]]"]
+
+This composition defines the MDMD `{composition}` directive. It's used to describe
+how `{unit}`s and/or other `{composition}`s are assembled, interact, or are
+conceptually grouped to form larger system parts or explain overarching concepts.
+It acts as the "Outer Leaflet" of the MDMD bilayer.
+
+## 1. Purpose
+
+The `{composition}` directive allows authors to structure narratives, define
+architectural views, illustrate interactions, and group related specification
+elements. It relies heavily on Markdown prose, embedded diagrams, and explicit
+linking to other MDMD directives (`[[id]]`).
+
+Reference: [[mdmd-concept-composition-intent]]
+
+## 2. MyST Directive Implementation Contract
+
+This `{unit}` defines the contract for the `DirectiveSpec` object that our
+MyST JavaScript plugin must export to implement the MDMD `{composition}` directive.
+
+::: {unit}
+id: "myst-directive-spec-for-mdmd-composition"
+unit-type: "typescript-interface-definition"
+language: "typescript"
+brief: "The MyST DirectiveSpec contract for the MDMD {composition} directive."
+source-ref: "src/directives/compositionDirective.ts" // Our target TS file
+
+This `DirectiveSpec` from `myst-common` outlines the expected structure for
+defining the `{composition}` directive within a MyST JavaScript plugin.
+
+\`\`\`typescript
+import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { mystParse } from 'myst-parser'; // To parse the body string
+import { u } from 'unist-builder';
+
+export const compositionDirectiveSpec: DirectiveSpec = {
+name: 'composition',
+// arg: undefined, // No positional arg for v0.1
+options: {
+id: { type: String, required: true, doc: 'Unique ID for this composition.' },
+'composition-type': { type: String, required: true, doc: 'Semantic type tag.' },
+status: { type: String, doc: 'Lifecycle status.' },
+version: { type: String, doc: 'Composition version.' },
+brief: { type: String, doc: 'One-line summary.' },
+'see-also': { type: String, doc: 'Related items (comma-separated or YAML list).' }
+},
+body: {
+type: String, // Expect the raw string body from MyST
+required: false,
+doc: 'Rich Markdown content, diagrams, and [[id]] links.'
+},
+run(data: DirectiveData): GenericNode[] {
+// Implementation TBD:
+// 1. Parse data.options.
+// 2. Parse data.body (string) as MyST Markdown into AST children using mystParse.
+// 3. Construct and return an 'mdmdComposition' AST node using unist-builder,
+// embedding the parsed body children and options.
+return []; // Placeholder
+}
+};
+\`\`\`
+
+**Key parsing logic for `run(data)` function:**
+
+- The `data.body` (string) needs to be parsed entirely as MyST Markdown. The `mystParse` function from `myst-parser` should be used for this.
+- The resulting AST children, along with the parsed options from `data.options`, will populate a custom `mdmdComposition` AST node.
+- The plugin should recognize and potentially process/validate `[[id]]` links within the parsed body content in a later phase (for v0.1, just parsing them as standard links is fine).
+- Mermaid diagrams (and other MyST extensions) embedded in the body will be handled by MyST's core parsing of `data.body` when we call `mystParse`.
+  :::
+
+## 3. Target MDMD Composition AST Node Structure
+
+This `{unit}` describes the conceptual structure of the `mdmdComposition` AST node that our plugin's `run()` function should generate.
+
+::: {unit}
+id: "ast-node-mdmd-composition"
+unit-type: "json-schema-like-definition" // Or "typescript-interface-definition"
+language: "typescript" // Using TS for schema clarity
+brief: "Target AST node structure for a parsed MDMD {composition}."
+
+\`\`\`typescript
+import type { GenericNode } from 'myst-common'; // For children
+
+interface MdmdCompositionNodeProps {
+compositionId: string; // From 'id' option
+compositionType: string; // From 'composition-type' option
+status?: string;
+version?: string;
+brief?: string;
+seeAlso?: string[]; // Assuming we parse the string option into an array
+}
+
+interface MdmdCompositionNode extends GenericNode { // Extends myst-common's GenericNode
+type: 'mdmdComposition'; // Custom node type
+children: GenericNode[]; // Parsed MyST AST nodes from the directive's body
+data?: MdmdCompositionNodeProps; // Or flatten props onto the node itself
+}
+\`\`\`
+
+**Note:** The `children` array will contain the full MyST AST generated from parsing the `{composition}` directive's body content. This includes paragraphs, lists, headings, Mermaid diagrams (as `code` nodes with `lang: mermaid`), and crucially, any `link` nodes (which we'd later teach tools to recognize if they are `[[id]]` style).
+:::
+:::
+
+```
+
+## MDMD_Specification/Primitives/UnitDirective.myst.md
+
+```markdown
+::: {composition}
+id: "mdmd-primitive-unit-directive-spec"
+composition-type: "language-primitive-specification"
+status: "draft"
+version: "0.1"
+brief: "Specification for the MDMD '{unit}' directive."
+see-also: ["[[mdmd-spec-main]]", "[[mdmd-concept-unit-intent]]"]
+
+This composition defines the MDMD `{unit}` directive, which is a fundamental
+building block for concrete contract specifications.
+
+## 1. Purpose
+
+The `{unit}` directive is designed to encapsulate a single, discrete, specifiable
+building block of a system. It defines the contract or declaration of an atomic part,
+acting as the "Inner Leaflet" of the MDMD bilayer.
+
+Reference: [[mdmd-concept-unit-intent]]
+
+## 2. MyST Directive Implementation Contract
+
+The following `{unit}` defines the contract for the `DirectiveSpec` object that our
+MyST JavaScript plugin must export to implement the MDMD `{unit}` directive.
+
+::: {unit}
+id: "myst-directive-spec-for-mdmd-unit"
+unit-type: "typescript-interface-definition"
+language: "typescript"
+brief: "The MyST DirectiveSpec contract for the MDMD {unit} directive."
+source-ref: "src/directives/unitDirective.ts" // Our target TS file
+
+This `DirectiveSpec` from `myst-common` outlines the expected structure for
+defining the `{unit}` directive within a MyST JavaScript plugin.
+
+\`\`\`typescript
+import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+
+export const unitDirectiveSpec: DirectiveSpec = {
+name: 'unit',
+// arg: undefined, // No positional arg for v0.1
+options: {
+id: { type: String, required: true, doc: 'Unique ID for this unit.' },
+'unit-type': { type: String, required: true, doc: 'Semantic type tag.' },
+language: { type: String, doc: 'Language of the main content block.' },
+status: { type: String, doc: 'Lifecycle status.' },
+version: { type: String, doc: 'Unit version.' },
+brief: { type: String, doc: 'One-line summary.' },
+'source-ref': { type: String, doc: 'Link to source file.' },
+'see-also': { type: String, doc: 'Related items (comma-separated or YAML list).' }
+},
+body: {
+type: String, // Request raw string body from MyST
+required: false,
+doc: 'Markdown prose and a primary fenced code block defining the unit.'
+},
+run(data: DirectiveData): GenericNode[] {
+// Implementation TBD:
+// 1. Parse data.options.
+// 2. Parse data.body (string) to separate leading/trailing MD and code block.
+// 3. Construct and return an 'mdmdUnit' AST node using unist-builder.
+return []; // Placeholder
+}
+};
+\`\`\`
+
+**Key parsing logic for `run(data)` function:**
+
+- The `data.body` (string) needs to be parsed to identify:
+  1.  Leading Markdown content (parsed into MyST AST children).
+  2.  The primary fenced code block (its lang and value captured).
+  3.  Trailing Markdown content (parsed into MyST AST children).
+- All options from `data.options` and the parsed body components should be used to populate a custom `mdmdUnit` AST node.
+  :::
+
+## 3. Target MDMD Unit AST Node Structure
+
+This `{unit}` describes the conceptual structure of the `mdmdUnit` AST node that our plugin's `run()` function should generate.
+
+::: {unit}
+id: "ast-node-mdmd-unit"
+unit-type: "json-schema-like-definition" // Or "typescript-interface-definition"
+language: "typescript" // Using TS for schema clarity
+brief: "Target AST node structure for a parsed MDMD {unit}."
+
+\`\`\`typescript
+interface MdmdUnitNodeProps {
+unitId: string;
+unitType: string;
+unitLanguage?: string;
+status?: string;
+version?: string;
+brief?: string;
+sourceRef?: string;
+seeAlso?: string[]; // Assuming we parse the string option into an array
+
+// Content from the directive's body
+codeBlockLang?: string;
+codeBlockValue?: string;
+}
+
+interface MdmdUnitNode extends GenericNode { // Extends myst-common's GenericNode
+type: 'mdmdUnit';
+children: GenericNode[]; // Parsed leading/trailing Markdown + placeholder for code (or code as a child)
+data?: MdmdUnitNodeProps; // Or flatten props onto the node itself
+}
+\`\`\`
+
+**Note:** The exact representation of the code block _within_ the `mdmdUnit` AST node (e.g., as a direct child `code` node, or its properties stored in `MdmdUnitNodeProps`) is a key design decision for the plugin implementation. For simplicity, the main code block could become a standard MyST `code` node as one of the `children` of the `mdmdUnit` node. The surrounding markdown would also be children.
+:::
+:::
+
+```
+
+## src/index.ts
+
+```typescript
+// src/index.ts
+import type { MystPlugin } from 'myst-common';
+import { unitDirective } from './directives/unitDirective';
+import { compositionDirective } from './directives/compositionDirective';
+
+const mdmdPlugin: MystPlugin = {
+  name: 'mdmd-primitives', // Or just 'mdmd'
+  directives: [unitDirective, compositionDirective],
+};
+
+export default mdmdPlugin;
+
+```
+
+## src/directives/unitDirective.ts
+
+```typescript
+// src/directives/unitDirective.ts
+import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import type { Root } from 'mdast'; // Ensure Root is imported
+import { u } from 'unist-builder';
+import { mystParse as actualMystParse } from 'myst-parser';
+
+// Typed mystParse function
+const mystParse = actualMystParse as (source: string) => Root;
+
+interface ExtractedCodeBlock {
+  leadingMarkdown: string;
+  codeBlockLang: string | null;
+  codeBlockValue: string | null;
+  trailingMarkdown: string;
+}
+
+// Helper function to find and extract the first fenced code block
+function extractPrimaryCodeBlock(bodyString: string): ExtractedCodeBlock {
+  // Regex to find the first fenced code block, capturing language and content.
+  // It handles optional language, and captures everything until the closing ```
+  const fencedCodeBlockRegex = /^```(\w*)\r?\n([\s\S]*?)\r?\n```/m;
+  const match = fencedCodeBlockRegex.exec(bodyString);
+
+  if (match) {
+    const lang = match[1] || null; // Language identifier (e.g., typescript, python)
+    const value = match[2] || ''; // Code content, default to empty string if somehow null
+    const fullMatch = match[0];
+    const matchIndex = bodyString.indexOf(fullMatch);
+
+    return {
+      leadingMarkdown: bodyString.substring(0, matchIndex).trim(),
+      codeBlockLang: lang,
+      codeBlockValue: value,
+      trailingMarkdown: bodyString.substring(matchIndex + fullMatch.length).trim(),
+    };
+  }
+
+  // No fenced code block found, treat entire body as leading Markdown
+  return {
+    leadingMarkdown: bodyString.trim(),
+    codeBlockLang: null,
+    codeBlockValue: null,
+    trailingMarkdown: '',
+  };
+}
+
+// Helper function to parse a markdown string to an array of GenericNode
+function parseMarkdownString(markdownString: string): GenericNode[] {
+  if (!markdownString || markdownString.trim() === '') return [];
+  try {
+    const parsedRoot = mystParse(markdownString);
+    if (parsedRoot && parsedRoot.type === 'root' && Array.isArray(parsedRoot.children)) {
+      return parsedRoot.children as GenericNode[];
+    }
+    console.warn('mystParse did not return a valid Root node for string:', markdownString);
+    return [
+      u('paragraph', [
+        u('text', `Warning: Could not parse Markdown: ${markdownString.substring(0, 100)}...`),
+      ]),
+    ];
+  } catch (e) {
+    console.error('Error parsing markdown string with mystParse:', e);
+    return [
+      u('paragraph', [u('text', `Error parsing Markdown: ${markdownString.substring(0, 100)}...`)]),
+    ];
+  }
+}
+
+export const unitDirective: DirectiveSpec = {
+  name: 'unit',
+  options: {
+    id: { type: String, required: true, doc: 'Unique identifier for this unit.' },
+    'unit-type': { type: String, required: true, doc: 'Semantic type of the unit.' },
+    language: { type: String, doc: "Primary language of the unit's main content/code block." },
+    status: { type: String, doc: 'Lifecycle status.' },
+    version: { type: String, doc: 'Version of this specific unit.' },
+    brief: { type: String, doc: 'Concise one-line summary.' },
+    'source-ref': { type: String, doc: 'Path to a linked source file.' },
+    'see-also': { type: String, doc: 'Comma-separated list of IDs or paths.' },
+  },
+  body: {
+    type: String,
+    required: false,
+    doc: 'Markdown content, optionally with one primary code block.',
+  },
+  run(data: DirectiveData): GenericNode[] {
+    console.log('[MDMD Plugin] unitDirective RUNNING!');
+    const bodyString = typeof data.body === 'string' ? data.body : '';
+    const { leadingMarkdown, codeBlockLang, codeBlockValue, trailingMarkdown } =
+      extractPrimaryCodeBlock(bodyString);
+
+    const leadingAstChildren: GenericNode[] = parseMarkdownString(leadingMarkdown);
+    const trailingAstChildren: GenericNode[] = parseMarkdownString(trailingMarkdown);
+
+    const unitNodeChildren: GenericNode[] = [...leadingAstChildren];
+
+    if (codeBlockValue !== null) {
+      const actualCodeLang = codeBlockLang || (data.options?.language as string) || '';
+      unitNodeChildren.push(u('code', { lang: actualCodeLang }, codeBlockValue));
+    }
+    unitNodeChildren.push(...trailingAstChildren);
+
+    const mdmdUnitNode = u(
+      'mdmdUnit',
+      {
+        unitId: (data.options?.id as string) || 'unknown-id',
+        unitType: (data.options?.['unit-type'] as string) || 'unknown-type',
+        unitLanguage: codeBlockLang || (data.options?.language as string) || undefined,
+        status: (data.options?.status as string) || undefined,
+        version: (data.options?.version as string) || undefined,
+        brief: (data.options?.brief as string) || undefined,
+        sourceRef: (data.options?.['source-ref'] as string) || undefined,
+        seeAlso: (data.options?.['see-also'] as string) || undefined,
+      },
+      unitNodeChildren
+    );
+
+    return [mdmdUnitNode];
+  },
+};
+
+```
+
+## src/directives/compositionDirective.ts
+
+```typescript
+// src/directives/compositionDirective.ts
+import { u } from 'unist-builder';
+import { mystParse } from 'myst-parser';
+import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import type { Root } from 'mdast'; // Added Root import
+
+// Helper function to parse a MyST string into an array of GenericNodes
+function parseMystStringBody(bodyString: string): GenericNode[] {
+  if (!bodyString || bodyString.trim() === '') {
+    return [];
+  }
+  try {
+    // The key change: cast to Root, then access children
+    const parsedRoot = mystParse(bodyString) as Root;
+    return parsedRoot.children as GenericNode[];
+  } catch (error) {
+    console.error('Error parsing MyST string body:', error);
+    // Return a paragraph node with an error message, formatted to satisfy the linter
+    return [u('paragraph', [u('text', `Error parsing body: ${bodyString.substring(0, 100)}...`)])];
+  }
+}
+
+export const compositionDirective: DirectiveSpec = {
+  name: 'composition',
+  arg: {
+    type: String,
+    required: false,
+  },
+  options: {
+    id: {
+      type: String,
+      required: true,
+    },
+    'composition-type': {
+      type: String,
+      required: false,
+    },
+    label: {
+      type: String,
+      required: false,
+    },
+    // Allow any other options for extensibility
+  },
+  body: {
+    type: String,
+    required: false,
+  },
+  run(data: DirectiveData): GenericNode[] {
+    const {
+      'composition-type': compositionType,
+      id,
+      label,
+    } = data.options as {
+      'composition-type'?: string;
+      id?: string;
+      label?: string;
+    };
+
+    if (!id) {
+      return [
+        u('paragraph', [
+          u('strong', 'Composition Error:'),
+          u('text', ' The '),
+          u('code', ':id:'),
+          u('text', ' option is mandatory for the {composition} directive.'),
+        ]),
+      ];
+    }
+
+    const bodyNodes = parseMystStringBody(data.body as string);
+
+    // Construct the mdmdComposition node
+    // Ensure all properties are defined, providing defaults where necessary
+    const compositionNode: GenericNode = {
+      type: 'mdmdComposition',
+      id: id, // id is guaranteed by the check above
+      'composition-type': compositionType || 'default', // Default if not provided
+      label: label || '', // Default to empty string if not provided
+      children: bodyNodes,
+    };
+
+    return [compositionNode];
+  },
+};
+
+```
+
+## docs/Concepts/CONCEPTS_CORE_PRIMITIVES_INTENT.md
+
+```markdown
+# MDMD Core Primitives: Intent and Purpose
+
+This document outlines the intended roles of the foundational MDMD directives. The formal specification of these directives _using MDMD itself_ will follow once the base MyST plugin is operational.
+
+## 1. The `{unit}` Directive
+
+- **Conceptual Role:** To define an atomic, fundamental building block. This is the smallest piece of a system that has a distinct, specifiable contract or definition. It's the "inner leaflet" of our membrane.
+- **What it _must_ capture (Intent for future formal MDMD spec of `{unit}` itself):**
+  - A unique identifier (`id`).
+  - A type descriptor (`unit-type`) that gives strong semantic context.
+  - The primary language of its core content (`language`).
+  - A formal content block (e.g., code signature, schema, list of properties, textual statement).
+  - Surrounding Markdown for human and AI contextual understanding.
+  - Linkage to its "true source" if it's a spec _of_ an existing artifact (`source-ref`).
+- **Examples of things that are `{unit}`s:**
+  - A C function's public signature.
+  - A C# class's public interface (methods, properties).
+  - A Python function's signature and docstring.
+  - A YAML snippet defining a Kubernetes resource.
+  - A JSON Schema for a data object.
+  - A specific legal clause in a contract.
+  - A single ingredient in a recipe with its quantity and preparation.
+  - A single, testable user requirement.
+
+## 2. The `{composition}` Directive
+
+- **Conceptual Role:** To describe how `{unit}`s and/or other `{composition}`s are assembled, related, and interact to form a more complex entity or to explain a higher-level concept, architecture, or process. This is the "outer leaflet."
+- **What it _must_ capture (Intent for future formal MDMD spec of `{composition}` itself):**
+  - A unique identifier (`id`).
+  - A type descriptor (`composition-type`) giving strong semantic context to the grouping.
+  - Rich Markdown body for explanation, rationale, and narrative.
+  - **Crucially: Explicit, navigable links (`[[id]]`) to the constituent `{unit}`s and sub-`{composition}`s.**
+  - Diagrams (e.g., Mermaid) that visually represent these relationships, ideally with linkable references in the diagram elements.
+- **Examples of things that are `{composition}`s:**
+  - The architecture of a software microservice (composed of API units, data model units, etc.).
+  - A user workflow or feature specification (composed of requirement units, UI interaction units).
+  - A data flow diagram and its explanation.
+  - The full specification for a deployable application.
+  - A chapter in a book (composed of section units).
+  - The complete recipe for a dish (composed of ingredient units and instruction units).
+  - An entire legal contract (composed of clause units and section compositions).
+
+```
+
+## docs/Concepts/CONCEPTS_MDMD_PHILOSOPHY.md
+
+```markdown
+# MDMD Philosophy: The Executable Idea
+
+## Vision
+
+MDMD (Membrane Design MarkDown) aims to be a universal textual medium for progressively concretizing ideas into fully specified, actionable solutions across diverse domains (software, engineering, legal, creative arts, etc.). It facilitates a symbiotic collaboration between human intellect and Artificial Intelligence.
+
+## Core Metaphor: The Bilayer Membrane
+
+The design of any complex system can be conceptualized as a "bilayer membrane":
+
+- **Inner Leaflet (The Concrete Contract):** The precise, verifiable interfaces and definitions of fundamental building blocks. These are the points of direct interaction with "reality" (e.g., executable code, physical material specifications, defined legal terms).
+- **Outer Leaflet (The Conceptual Architecture):** The organization, relationships, interactions, and purpose of these building blocks, forming coherent larger structures and explaining the system's "why" and "how" at a human-understandable level.
+
+MDMD provides the language to describe both leaflets and their interplay.
+
+## Principles
+
+1.  **Progressive Concretization:** Ideas -> High-Level Compositions -> Detailed Units -> Implementation.
+2.  **Human Readability First:** Specifications must be clear and intuitive for human authors and reviewers.
+3.  **AI Interpretability:** Structure must be sufficient for LLMs (guided by the MDMD Spec Doc) to understand, generate, and relate specifications to implementations.
+4.  **Extensibility:** The system of types (`unit-type`, `composition-type`) must be open and adaptable to any domain.
+5.  **Bi-Directional Thinking:** Encourage a fluid movement between specification and implementation, ideally with tooling to assist synchronization.
+6.  **Openness:** The MDMD framework itself and its resultant specifications should be open and shareable.
+
+## The Role of LLMs
+
+LLMs act as:
+
+- **Interpreters:** Understanding MDMD files guided by the MDMD Specification.
+- **Generators:** Drafting MDMD content from high-level ideas or existing artifacts (code, documents).
+- **Translators:** Bridging MDMD specifications to/from implementation-specific details.
+- **Assistants:** Helping humans refine, link, and maintain MDMD documents.
+
+MDMD is the structured language for this human-AI dialogue.
+
+```
+

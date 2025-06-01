@@ -2,15 +2,16 @@
   "compilerOptions": {
     /* Basic Options */
     "target": "ES2022", // Target modern ECMAScript features
-    "module": "NodeNext", // Use Node.js's modern module system
-    "moduleResolution": "NodeNext", // How module imports are resolved
+    "module": "ESNext", // For .mjs output, compatible with moduleResolution: "Bundler"
+    "moduleResolution": "Bundler", // Change to Bundler for esbuild
     "lib": ["ES2022", "DOM"], // Include ES2022 features and DOM types (useful for web-standard APIs Myst or its deps might use)
     "declaration": true, // Generate .d.ts files
     "declarationMap": true, // Generate source maps for .d.ts files
     "sourceMap": true, // Generate .js.map source map files
     "outDir": "./dist", // Output directory for compiled JavaScript
     "rootDir": "./src", // Specify root directory of source files
-    "composite": true, // Enables building dependent projects (if any later) more efficiently
+    "composite": false, // Set to false unless you have a multi-project setup with project references
+    "importHelpers": false, // Not typically needed with modern TS
 
     /* Strict Type-Checking Options */
     "strict": true, // Enable all strict type-checking options
@@ -26,6 +27,8 @@
     "resolveJsonModule": true, // Include modules imported with .json extension
     "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
     "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+    "allowImportingTsExtensions": false, // Important for `moduleResolution: "Bundler"`
+    "noEmit": false, // Set to false: tsc will be used for type checking and declaration file generation
 
     /* Experimental Options */
     // "experimentalDecorators": true, // Uncomment if you use decorators

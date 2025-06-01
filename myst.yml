@@ -1,0 +1,5 @@
+version: 1
+project:
+  title: MDMD Plugin Test
+  plugins:
+    - ./dist/index.mjs # Path to your compiled plugin entry point

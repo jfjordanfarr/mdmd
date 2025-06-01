@@ -2,9 +2,10 @@
   "name": "mdmd",
   "version": "0.1.0",
   "description": "Membrane Design MarkDown (MDMD): A MyST Markdown plugin and methodology for specifying complex solutions via {unit} and {composition} primitives, designed for human-AI collaboration.",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "files": [
     "dist/",
     "README.md",
@@ -12,15 +13,23 @@
     "MDMD_Specification/"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "dev": "tsc --watch --project tsconfig.json",
+    "clean": "rm -rf ./dist",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "build:js": "node esbuild.config.mjs",
+    "build": "npm run clean && npm run build:types && npm run build:js",
+    "dev": "node esbuild.config.mjs --watch",
     "lint": "eslint ./src --ext .ts,.js",
     "lint:fix": "eslint ./src --ext .ts,.js --fix",
     "format": "prettier --write \"**/*.{ts,js,json,md,yaml,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,js,json,md,yaml,yml}\"",
     "test": "echo \"Error: no test specified yet. TODO: Add Vitest/Jest\" && exit 0",
-    "clean": "rm -rf ./dist",
     "prepublishOnly": "npm run clean && npm run build"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
   },
   "repository": {
     "type": "git",
@@ -44,15 +53,22 @@
   },
   "homepage": "https://github.com/jfjordanfarr/mdmd#readme",
   "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
+    "esbuild": "^0.25.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "myst-common": "^1.1.2",
+    "myst-parser": "^1.5.14",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
-    "@types/node": "^20.12.12",
     "unist-builder": "^4.0.0"
+  },
+  "dependencies": {
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5"
   }
 }
