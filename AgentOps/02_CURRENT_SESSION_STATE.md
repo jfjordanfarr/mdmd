@@ -1,7 +1,7 @@
 ---
 title: 'Agent Session State - MDMD Project'
 description: "Tracks the current state of the agent's operations for developing the MDMD MyST plugin and specifications."
-version: '3.12' # Increment version
+version: '3.13' # Increment version
 date: 2025-06-02
 see_also:
   - title: 'MDMD Methodology'
@@ -53,3 +53,30 @@ see_also:
 5. **Test build pipeline** (`npm run clean && npm run build`) to ensure no regressions
 6. **Test MyST functionality** (`myst build test-doc.myst.md --html`) to verify plugin still works correctly
 7. **Update Session State** with progress and results
+
+# Current Session State
+
+## Current Task
+Updating README.md to reflect the more nuanced MDMD specification, including:
+- Recursive bilayer/strata model
+- Four-stratum organization
+- Enhanced ID conventions and cross-reference standards
+- Dependency direction guidelines
+- More accurate examples
+
+## Recent Context
+- Reviewed MDMD specification documents showing the recursive bilayer/strata architecture
+- The specification has evolved to include:
+  - Definition/Vision stratum
+  - Definition/Requirements stratum
+  - Specification/Concepts stratum
+  - Specification/Implementations stratum
+- Each stratum contains its own bilayer of compositions (outer) and units (inner)
+- Enhanced linking patterns with specific dependency directions
+
+## Next Steps
+1. Update README.md with the recursive bilayer/strata model
+2. Revise examples to show proper ID conventions (kebab-case)
+3. Add visual representation of the four-stratum organization
+4. Update goals to reflect current plugin capabilities
+5. Enhance the vision section with the recursive architecture concept
