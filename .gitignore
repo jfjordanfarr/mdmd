@@ -516,4 +516,4 @@ tsconfig.tsbuildinfo
 # Any local test result artifacts (if we use specific names later)
 test-results/
 # AgentOps codebase dump files (can get large, not usually committed)
-AgentOps/*Dump.md
+*Dump.md

@@ -4,16 +4,15 @@ import { u } from 'unist-builder';
 import type { Root, Node as MdastNode } from 'mdast';
 import type { VFile } from 'vfile';
 
-// Interface keys match camelCase as defined in DirectiveSpec.options
+// Interface keys match kebab-case as defined in enhanced DirectiveSpec.options
 interface CompositionDirectiveParsedOptions {
   id: string;
-  compositionType: string;
+  title?: string;
+  'composition-type': string;
+  status?: string;
+  version?: string;
   brief?: string;
-  description?: string;
-  layout?: string;
-  sourceRef?: string;
-  derivedFrom?: string;
-  tags?: string;
+  'see-also'?: string;
 }
 
 export const compositionDirective: DirectiveSpec = {
@@ -24,46 +23,41 @@ export const compositionDirective: DirectiveSpec = {
     required: false,
     doc: 'Optional positional argument (not typically used).'
   } as OptionDefinition,
-  options: { // Define keys in camelCase
+  options: { // Define keys in kebab-case as per enhanced specification
     id: {
       type: String,
       required: true,
-      doc: 'Unique identifier for the composition.'
+      doc: 'Globally unique identifier using kebab-case format (e.g., "auth-module-architecture").'
     } as OptionDefinition,
-    compositionType: { // camelCase
+    title: {
+      type: String,
+      required: false,
+      doc: 'Human-readable display title (e.g., "Authentication Module Architecture") for navigation.'
+    } as OptionDefinition,
+    'composition-type': { // kebab-case
       type: String,
       required: true,
-      doc: 'The type of the composition (e.g., system, module, interaction).'
+      doc: 'Semantic type tag (e.g., "system-architecture", "feature-requirements-group", "software-module-definition").'
+    } as OptionDefinition,
+    status: {
+      type: String,
+      required: false,
+      doc: 'Lifecycle status (idea | draft | review | stable | deprecated).'
+    } as OptionDefinition,
+    version: {
+      type: String,
+      required: false,
+      doc: 'Composition version identifier.'
     } as OptionDefinition,
     brief: {
       type: String,
       required: false,
-      doc: 'A brief summary of the composition.'
+      doc: 'Concise one-line summary of the composition\'s purpose.'
     } as OptionDefinition,
-    description: {
+    'see-also': { // kebab-case
       type: String,
       required: false,
-      doc: 'A more detailed description of the composition.'
-    } as OptionDefinition,
-    layout: {
-      type: String,
-      required: false,
-      doc: 'Hint for visual layout (e.g., top-down, left-right).'
-    } as OptionDefinition,
-    sourceRef: { // camelCase
-        type: String,
-        required: false,
-        doc: 'Reference to the source code location if applicable.'
-    } as OptionDefinition,
-    derivedFrom: { // camelCase
-        type: String,
-        required: false,
-        doc: 'Reference to another composition from which this is derived.'
-    } as OptionDefinition,
-    tags: {
-        type: String,
-        required: false,
-        doc: 'Comma-separated tags for categorization.'
+      doc: 'Cross-references using [[id]] format or external links (comma-separated or YAML list).'
     } as OptionDefinition
   },
   body: { // Add body definition
@@ -72,47 +66,44 @@ export const compositionDirective: DirectiveSpec = {
     doc: 'The main content body of the composition directive.'
   } as OptionDefinition,
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
-    // Expect MyST to provide options in camelCase matching DirectiveSpec.options keys
+    // Expect MyST to provide options in kebab-case matching DirectiveSpec.options keys
     const options = data.options as unknown as CompositionDirectiveParsedOptions;
 
     const id = options?.id;
-    const compositionType = options?.compositionType; // Access camelCase
+    const title = options?.title;
+    const compositionType = options?.['composition-type']; // Access kebab-case
     const brief = options?.brief;
-    const description = options?.description;
-    const layout = options?.layout;
-    const sourceRef = options?.sourceRef; // Access camelCase
-    const derivedFrom = options?.derivedFrom; // Access camelCase
-    const tags = options?.tags;
+    const status = options?.status;
+    const version = options?.version;
+    const seeAlso = options?.['see-also']; // Access kebab-case
 
     console.log('[MDMD Plugin] compositionDirective arg:', data.arg);
     console.log('[MDMD Plugin] compositionDirective options received by run():', data.options);
     console.log('[MDMD Plugin] compositionDirective options after access:', {
-        id, compositionType, brief, description, layout, sourceRef, derivedFrom, tags
+        id, title, compositionType, brief, status, version, seeAlso
     });
 
     if (!id) {
       vfile.message('Required option "id" not provided for composition directive.', data.node as MdastNode, 'mdmd-plugin:error');
     }
     if (!compositionType) {
-      const rawCompositionType = data.options?.['composition-type'] as string | undefined;
-      if (rawCompositionType) {
-        console.warn('[MDMD Plugin] compositionDirective: compositionType accessed as composition-type. MyST did not convert to camelCase.');
-      }
-      vfile.message('Required option "compositionType" not provided for composition directive.', data.node as MdastNode, 'mdmd-plugin:error');
+      vfile.message('Required option "composition-type" not provided for composition directive.', data.node as MdastNode, 'mdmd-plugin:error');
     }
+
+    // Parse see-also into array if provided
+    const seeAlsoArray = seeAlso ? seeAlso.split(',').map(ref => ref.trim()) : undefined;
 
     const bodyString = typeof data.body === 'string' ? data.body : '';
     const bodyAst = ctx.parseMyst(bodyString) as Root;
 
     const compositionNode = u('mdmdComposition', {
-      id,
-      compositionType: compositionType ?? data.options?.['composition-type'] as string | undefined, // Prefer camelCase, fallback to kebab
+      compositionId: id,
+      compositionTitle: title,
+      compositionType,
+      status,
+      version,
       brief,
-      description,
-      layout,
-      sourceRef,
-      derivedFrom,
-      tags,
+      seeAlso: seeAlsoArray,
       value: bodyString,
       children: bodyAst.children as GenericNode[],
     }) as GenericNode;

@@ -12,7 +12,7 @@ myst: 1.0
 ````{unit}
 ---
 id: "test-unit-simple"
-unitType: "function"
+unit-type: "function"
 language: "typescript"
 ---
 // This is the body of the simple unit
@@ -26,9 +26,9 @@ function helloWorld() {
 ````{unit}
 ---
 id: "test-unit-source"
-unitType: "class"
+unit-type: "class"
 language: "python"
-sourceRef: "./path/to/some/source.py"
+source-ref: "./path/to/some/source.py"
 ---
 # This unit has a source reference
 class MyClass:
@@ -40,10 +40,14 @@ class MyClass:
 ````{unit}
 ---
 id: "test-unit-all"
-unitType: "interface"
+unit-type: "interface"
+title: "All Options Interface"
 language: "java"
-sourceRef: "./another/source.java"
-description: "A comprehensive test unit."
+source-ref: "./another/source.java"
+brief: "A comprehensive test unit."
+status: "stable"
+version: "1.0"
+see-also: "[[test-unit-simple]], [[test-unit-source]]"
 ---
 // All options provided
 public interface AllOptions {
@@ -58,7 +62,7 @@ public interface AllOptions {
 ````{composition}
 ---
 id: "test-comp-simple"
-compositionType: "sequence"
+composition-type: "sequence"
 ---
 A -> B: Message
 B --> A: Response
@@ -69,8 +73,8 @@ B --> A: Response
 ````{composition}
 ---
 id: "test-comp-desc"
-compositionType: "collaboration"
-description: "A test composition with a description."
+composition-type: "collaboration"
+brief: "A test composition with a description."
 ---
 actor User
 participant System
@@ -83,9 +87,12 @@ System --> User: Acknowledge
 ````{composition}
 ---
 id: "test-comp-all"
-compositionType: "workflow"
-description: "Full composition test."
-sourceRef: "./diagrams/workflow.puml"
+composition-type: "workflow"
+title: "Full Workflow Composition"
+brief: "Full composition test."
+status: "review"
+version: "0.5"
+see-also: "[[test-comp-simple]], [[test-comp-desc]]"
 ---
 @startuml
 start

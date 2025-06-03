@@ -4,16 +4,17 @@ import { u } from 'unist-builder';
 import type { Root, Node as MdastNode } from 'mdast';
 import type { VFile } from 'vfile';
 
-// Interface keys match camelCase as defined in DirectiveSpec.options
+// Interface keys match kebab-case as defined in enhanced DirectiveSpec.options
 interface UnitDirectiveParsedOptions {
   id: string;
-  unitType: string;
-  brief?: string;
-  description?: string;
+  title?: string;
+  'unit-type': string;
   language?: string;
-  sourceRef?: string;
-  derivedFrom?: string;
-  tags?: string;
+  status?: string;
+  version?: string;
+  brief?: string;
+  'source-ref'?: string;
+  'see-also'?: string;
 }
 
 export const unitDirective: DirectiveSpec = {
@@ -24,98 +25,130 @@ export const unitDirective: DirectiveSpec = {
     required: false,
     doc: 'Optional positional argument (not typically used).'
   } as OptionDefinition,
-  options: { // Define keys in camelCase
+  options: { // Define keys in kebab-case as per enhanced specification
     id: {
       type: String,
       required: true,
-      doc: 'Unique identifier for the unit.'
+      doc: 'Globally unique identifier using kebab-case format (e.g., "user-service-class").'
     } as OptionDefinition,
-    unitType: { // camelCase
+    title: {
+      type: String,
+      required: false,
+      doc: 'Human-readable display title (e.g., "User Service Class") for navigation and documentation.'
+    } as OptionDefinition,
+    'unit-type': { // kebab-case
       type: String,
       required: true,
-      doc: 'The type of the unit (e.g., class, function, interface).'
-    } as OptionDefinition,
-    brief: {
-      type: String,
-      required: false,
-      doc: 'A brief summary of the unit.'
-    } as OptionDefinition,
-    description: {
-      type: String,
-      required: false,
-      doc: 'A more detailed description of the unit.'
+      doc: 'Semantic type tag guiding content interpretation (e.g., "functional-requirement", "javascript-class-definition").'
     } as OptionDefinition,
     language: {
       type: String,
       required: false,
-      doc: 'The programming language of the unit, if applicable.'
+      doc: 'Language of the main content block (e.g., "javascript", "typescript", "markdown").'
     } as OptionDefinition,
-    sourceRef: { // camelCase
-        type: String,
-        required: false,
-        doc: 'Reference to the source code location.'
+    status: {
+      type: String,
+      required: false,
+      doc: 'Lifecycle status (idea | draft | review | stable | deprecated).'
     } as OptionDefinition,
-    derivedFrom: { // camelCase
-        type: String,
-        required: false,
-        doc: 'Reference to another unit from which this is derived.'
+    version: {
+      type: String,
+      required: false,
+      doc: 'Unit version identifier.'
     } as OptionDefinition,
-    tags: {
-        type: String,
-        required: false,
-        doc: 'Comma-separated tags for categorization.'
+    brief: {
+      type: String,
+      required: false,
+      doc: 'Concise one-line summary of the unit\'s purpose.'
+    } as OptionDefinition,
+    'source-ref': { // kebab-case
+      type: String,
+      required: false,
+      doc: 'Relative path to implementation file for bi-directional synchronization.'
+    } as OptionDefinition,
+    'see-also': { // kebab-case
+      type: String,
+      required: false,
+      doc: 'Cross-references using [[id]] format or external links (comma-separated or YAML list).'
     } as OptionDefinition
   },
   body: { // Add body definition
     type: String,
     required: false,
-    doc: 'The main content body of the unit directive.'
+    doc: 'Markdown prose and primary fenced code block defining the unit contract with [[id]] cross-references.'
   } as OptionDefinition,
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
-    // Expect MyST to provide options in camelCase matching DirectiveSpec.options keys
+    // Expect MyST to provide options in kebab-case matching DirectiveSpec.options keys
     const options = data.options as unknown as UnitDirectiveParsedOptions;
 
     const id = options?.id;
-    const unitType = options?.unitType; // Access camelCase
+    const title = options?.title;
+    const unitType = options?.['unit-type']; // Access kebab-case
     const brief = options?.brief;
-    const description = options?.description;
     const language = options?.language;
-    const sourceRef = options?.sourceRef; // Access camelCase
-    const derivedFrom = options?.derivedFrom; // Access camelCase
-    const tags = options?.tags;
+    const status = options?.status;
+    const version = options?.version;
+    const sourceRef = options?.['source-ref']; // Access kebab-case
+    const seeAlso = options?.['see-also']; // Access kebab-case
 
     console.log('[MDMD Plugin] unitDirective arg:', data.arg);
     console.log('[MDMD Plugin] unitDirective options received by run():', data.options);
     console.log('[MDMD Plugin] unitDirective options after access:', {
-        id, unitType, brief, description, language, sourceRef, derivedFrom, tags
+        id, title, unitType, brief, language, status, version, sourceRef, seeAlso
     });
 
+    // Validation
     if (!id) {
       vfile.message('Required option "id" not provided for unit directive.', data.node as MdastNode, 'mdmd-plugin:error');
     }
     if (!unitType) {
-      // If camelCase access failed, check original kebab-case as a fallback from raw data.options
-      const rawUnitType = data.options?.['unit-type'] as string | undefined;
-      if (rawUnitType) {
-        console.warn('[MDMD Plugin] unitDirective: unitType accessed as unit-type. MyST did not convert to camelCase.');
-        // Potentially use rawUnitType here if needed
-      }
-      vfile.message('Required option "unitType" not provided for unit directive.', data.node as MdastNode, 'mdmd-plugin:error');
+      vfile.message('Required option "unit-type" not provided for unit directive.', data.node as MdastNode, 'mdmd-plugin:error');
     }
+
+    // ID format validation (kebab-case)
+    if (id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) {
+      vfile.message(`ID "${id}" must use kebab-case format (lowercase letters, numbers, and hyphens).`, data.node as MdastNode, 'mdmd-plugin:warning');
+    }
+
+    // Parse see-also into array if provided
+    const seeAlsoArray = seeAlso ? seeAlso.split(',').map(ref => ref.trim()) : undefined;
 
     const bodyString = typeof data.body === 'string' ? data.body : '';
     const bodyAst = ctx.parseMyst(bodyString) as Root;
 
+    // Extract code blocks from parsed body for enhanced metadata
+    let codeBlockLang: string | undefined;
+    let codeBlockValue: string | undefined;
+
+    for (const node of bodyAst.children) {
+      if (node.type === 'code' && 'lang' in node && 'value' in node) {
+        codeBlockLang = node.lang as string;
+        codeBlockValue = node.value as string;
+        break; // Take first code block as primary
+      }
+    }
+
+    // Create enhanced mdmdUnit node matching the specification
     const unitNode = u('mdmdUnit', {
-      id,
-      unitType: unitType ?? data.options?.['unit-type'] as string | undefined, // Prefer camelCase, fallback to kebab
+      // Core unit properties
+      unitId: id,
+      unitTitle: title,
+      unitType,
+      unitLanguage: language || codeBlockLang, // Fallback to detected code block language
+      status,
+      version,
       brief,
-      description,
-      language,
       sourceRef,
-      derivedFrom,
-      tags,
+      seeAlso: seeAlsoArray,
+
+      // Enhanced content metadata
+      codeBlockLang,
+      codeBlockValue,
+
+      // Raw value for backwards compatibility
       value: bodyString,
+
+      // Parsed children for rendering
       children: bodyAst.children as GenericNode[],
     }) as GenericNode;
 
