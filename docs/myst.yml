@@ -1,0 +1,30 @@
+version: 1
+project:
+  title: MDMD Documentation
+  subtitle: Membrane Design MarkDown - MyST Plugin and Methodology
+  description: Documentation for MDMD (Membrane Design MarkDown), a MyST Markdown plugin implementing {unit} and {composition} directives for human-AI collaborative design specification.
+  authors:
+    - name: Jordan Sterling Farr
+      affiliations:
+        - MDMD Project
+  github: https://github.com/jfjordanfarr/mdmd
+  open_access: true
+  license: MIT
+
+  # Plugin configuration
+  plugins:
+    - ../dist/index.mjs # Path to compiled MDMD plugin
+
+site:
+  title: MDMD Documentation
+  nav:
+    - title: Home
+      url: index.md
+    - title: Concepts
+      url: Concepts/index.md
+    - title: Units
+      url: Units/index.md
+    - title: Compositions
+      url: Compositions/index.md
+    - title: MDMD Specification
+      url: MDMD_Specification/MDMD.md

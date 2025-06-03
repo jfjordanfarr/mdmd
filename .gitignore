@@ -517,3 +517,16 @@ tsconfig.tsbuildinfo
 test-results/
 # AgentOps codebase dump files (can get large, not usually committed)
 *Dump.md
+
+# MyST Build Artifacts
+# MyST build output directories
+_build/
+docs/_build/
+# MyST cache and temporary files
+.myst.yml.bak
+*.myst.cache
+# MyST site generation artifacts
+myst.xref.json
+myst.search.json
+config.json
+objects.inv
