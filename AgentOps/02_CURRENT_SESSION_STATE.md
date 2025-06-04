@@ -1,7 +1,7 @@
 ---
 title: 'Agent Session State - MDMD Project'
 description: "Tracks the current state of the agent's operations for developing the MDMD MyST plugin and specifications."
-version: '3.16' # Increment version
+version: '3.17' # Increment version
 date: 2025-06-04
 see_also:
   - title: 'MDMD Methodology'
@@ -17,16 +17,21 @@ see_also:
 - **Agent Version:** GitHub Copilot
 - **LLM Used:** Copilot's internal model
 - **Current Overall Goal:** Ensure robust and functional MDMD project infrastructure, including documentation deployment.
-- **Current Sub-Task:** Fix MyST build errors (invalid nav URLs and frontmatter) and then troubleshoot GitHub Pages 404 error.
-- **Current Focus Document:** `docs/myst.yml`, `docs/Compositions/index.md`, `/.github/workflows/docs.yml`.
-- **Overall Plugin Progress:** Plugin core functionality established. Documentation build and deployment is the current focus.
+- **Current Sub-Task:** Fix MyST base URL configuration causing 404 errors for assets.
+- **Current Focus Document:** `docs/myst.yml` - investigating base URL and site configuration.
+- **Overall Plugin Progress:** Plugin core functionality established. Documentation build process needs base URL fix.
 
 ## Log of Key Actions / Decisions / Issues (Newest First)
 
-- **2025-06-04 - MyST build errors identified.**
-  - Invalid nav URLs in `docs/myst.yml`.
-  - Invalid YAML frontmatter in `docs/Compositions/index.md`.
-  - Added `--html` flag to `myst build` command in `docs.yml`.
+- **2025-06-04 - Base URL issue identified.**
+  - Local serve shows assets are looking for `/mdmd/build/...` paths but serving from root.
+  - This indicates a base URL configuration problem in MyST build settings.
+  - Previous fixes to nav URLs and frontmatter were applied but didn't resolve the core issue.
+- **2025-06-04 - MyST build errors partially resolved.**
+  - Fixed invalid nav URLs in `docs/myst.yml`.
+  - Fixed invalid YAML frontmatter in `docs/Compositions/index.md`.
+  - Added `--html` flag to `myst build` command.
+  - Build process completed but assets are referenced with incorrect base paths.
 - **2025-06-04 - Troubleshooting GitHub Pages 404 error.**
   - Removed duplicate workflow file `/.github/workflows/github-pages`.
   - Initial check of `docs/_build/site/` revealed missing `index.html` at the root.
@@ -37,11 +42,11 @@ see_also:
 
 ## Agent Notes & Reminders (Focus for this Session)
 
-- **Primary Goal:** Resolve the 404 error on the GitHub Pages site.
-  - **Task 1:** Fix errors in `docs/myst.yml` (nav URLs) and `docs/Compositions/index.md` (frontmatter).
-  - **Task 2:** Ensure `docs/_build/site/` contains the necessary `index.html` file at its root after a successful build.
-  - **Task 3:** Verify the GitHub Actions workflow (`docs.yml`) correctly builds, uploads, and deploys the artifact.
-  - **Task 4:** Check GitHub Pages settings in the repository.
+- **Primary Goal:** Resolve the base URL configuration issue causing asset 404 errors.
+  - **Root Cause:** HTML is generating asset paths like `/mdmd/build/...` but they should be relative or match the actual serving path.
+  - **Task 1:** Check MyST configuration for base URL settings in `docs/myst.yml`.
+  - **Task 2:** Verify the correct base URL configuration for both local development and GitHub Pages deployment.
+  - **Task 3:** Rebuild with corrected configuration and test both locally and for GitHub Pages.
 
 ## Key Information from User:
 - GitHub Pages is configured to deploy using GitHub Actions.
@@ -60,29 +65,40 @@ see_also:
 
 # Current Session State
 
-## Current Task
-Fix MyST build errors and then troubleshoot and resolve the 404 error for the GitHub Pages documentation site.
+## Latest User Response
+User confirmed that the development process is working correctly and requests documentation of the MyST development workflow in an idiomatic location within the project structure.
 
-## Problem Statement
-MyST build process is failing due to invalid nav URLs in `docs/myst.yml` and incorrect YAML frontmatter in `docs/Compositions/index.md`. These issues need to be resolved before we can confirm if `index.html` is generated correctly for GitHub Pages deployment.
+## Session Progress
+**COMPLETED TASKS:**
+1. ✅ Fixed MyST configuration errors in `docs/myst.yml` (corrected invalid nav URLs)
+2. ✅ Fixed YAML frontmatter in `docs/Compositions/index.md`
+3. ✅ Identified correct MyST output directory (`docs/_build/html/`)
+4. ✅ Updated GitHub Actions workflow to use correct path and BASE_URL
+5. ✅ Resolved BASE_URL double-slash issue (using `/mdmd` not `/mdmd/`)
+6. ✅ **VALIDATED: Local development environment works perfectly**
+   - `cd docs && npx myst build --html` generates content in `docs/_build/html/`
+   - `npx serve docs/_build/html -p 3003` serves documentation with full styling
+7. ✅ **GITIGNORE ANALYSIS COMPLETE**
+   - Confirmed `docs/_build/` is properly gitignored (line 524)
+   - Recommended keeping current approach (gitignore + GitHub Actions)
 
-## Files Involved
-- `docs/myst.yml` (Contains invalid nav URLs)
-- `docs/Compositions/index.md` (Contains invalid YAML frontmatter)
-- `/.github/workflows/docs.yml` (Workflow for building and deploying docs)
-- `docs/_build/site/` (Expected location of built static site files)
+**CURRENT TASK:**
+Document the validated MyST development workflow in an appropriate location within the project structure.
 
-## Next Steps
-1.  **Fix `docs/myst.yml`:** Correct `nav` URLs to be valid relative paths.
-2.  **Fix `docs/Compositions/index.md`:** Correct the `title` in the YAML frontmatter.
-3.  **Rebuild Documentation:** Execute `cd docs && npx myst build --html`.
-4.  **Verify Build Output:** Check if `docs/_build/site/index.html` exists.
-5.  **Analyze Workflow & MyST Config:** If `index.html` is still missing or issues persist, re-examine `docs.yml` and `docs/myst.yml`.
-6.  **Check GitHub Pages Settings:** Confirm settings in the repository.
-7.  **Propose Further Fixes:** Based on findings, suggest modifications.
-8.  **Update Session State:** Document actions taken and outcomes.
+**LOCATION OPTIONS:**
+- `README.md` (main project readme)
+- `docs/README.md` (documentation-specific readme)
+- `docs/CONTRIBUTING.md` or `CONTRIBUTING.md` (development guide)
+- New dedicated documentation development guide
 
-## Technical Notes from Previous Session (May need re-evaluation)
-- MyST builds to `_build/site/` directory successfully. (This needs to be confirmed for the current build being deployed, specifically the presence of `index.html` at the root).
-- Plugin loads: "mdmd-primitives (dist/index.mjs) loaded: 2 directives"
-- Custom {unit} and {composition} directives render correctly in browser (This was likely a local preview).
+**NEXT STEPS:**
+1. Choose appropriate location for workflow documentation
+2. Document the complete MyST development workflow
+3. Include both local development and deployment processes
+4. Update session state with completion
+
+## Key Context
+- MyST outputs to `docs/_build/html/` (verified working perfectly)
+- Local dev workflow: `cd docs && npx myst build --html && npx serve docs/_build/html -p 3003`
+- GitHub Pages deployment via Actions with BASE_URL=/mdmd
+- Build artifacts properly gitignored per best practices

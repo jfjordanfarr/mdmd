@@ -46,7 +46,7 @@ jobs:
       - name: Build documentation with MyST
         run: |
           cd docs
-          BASE_URL=/mdmd/ npx myst build --html
+          BASE_URL=/mdmd npx myst build --html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

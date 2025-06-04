@@ -20,6 +20,8 @@ site:
   nav:
     - title: Home
       url: /index.md
+    - title: Development Guide
+      url: /DEVELOPMENT.md
     - title: Concepts
       url: /Concepts/index.md
     - title: Units

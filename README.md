@@ -150,20 +150,71 @@ This project is in its **early, active development phase**.
 *   Implement tooling for dependency visualization and link integrity checking
 *   Foster a community around MDMD as a standard for AI-assisted specification
 
-## Getting Started (Conceptual - For Plugin Development)
+## Getting Started
+
+### Repository Structure
 
 This repository contains:
 *   **`MDMD_Specification/`**: The core definition of MDMD, including the formal spec for its primitives. This is the "North Star" for LLM interpretation.
-*   **`docs/Concepts/`**: Philosophical underpinnings and intent behind MDMD.
+*   **`docs/`**: Project documentation built with MyST, including concepts and specifications.
 *   **`src/`**: The TypeScript source code for the `mdmd-primitives` MyST plugin.
 *   **`test-doc.myst.md`**: An example MyST document using the MDMD directives for testing.
 *   **`myst.yml`**: Configures `mystmd` to load the local development plugin.
 
-To build and test the plugin locally:
-1.  Ensure Node.js and npm are installed.
-2.  Run `npm install` to get dependencies.
-3.  Run `npm run build` to compile the plugin.
-4.  Run `myst build test-doc.myst.md --html` to parse the test document using the plugin.
+### Plugin Development Workflow
+
+To develop and test the MDMD MyST plugin:
+
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Build the plugin:**
+    ```bash
+    npm run build
+    ```
+
+3.  **Test with example document:**
+    ```bash
+    myst build test-doc.myst.md --html
+    ```
+
+### Documentation Development Workflow
+
+The project documentation is built using MyST and deployed via GitHub Pages. Here's the complete workflow:
+
+#### Local Development
+
+1.  **Build the documentation:**
+    ```bash
+    cd docs
+    npx myst build --html
+    ```
+
+2.  **Serve locally for development:**
+    ```bash
+    npx serve docs/_build/html -p 3003
+    ```
+
+3.  **Access the documentation:**
+    Open `http://localhost:3003` in your browser
+
+#### Deployment
+
+Documentation is automatically deployed to GitHub Pages via GitHub Actions when changes are pushed to the main branch. The workflow:
+
+1.  Builds documentation with `BASE_URL=/mdmd` for GitHub Pages compatibility
+2.  Outputs static HTML to `docs/_build/html/`
+3.  Deploys to GitHub Pages at `https://yourorg.github.io/mdmd`
+
+#### Build Artifacts
+
+Build artifacts in `docs/_build/` are gitignored per standard practice. This ensures:
+- Clean repository focused on source files
+- Reproducible builds from source
+- No merge conflicts on generated files
+- Automated deployment via CI/CD
 
 ## Contributing
 
