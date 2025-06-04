@@ -19,12 +19,12 @@ site:
   title: MDMD Documentation
   nav:
     - title: Home
-      url: index.md
+      url: /index.md
     - title: Concepts
-      url: Concepts/index.md
+      url: /Concepts/index.md
     - title: Units
-      url: Units/index.md
+      url: /Units/index.md
     - title: Compositions
-      url: Compositions/index.md
+      url: /Compositions/index.md
     - title: MDMD Specification
-      url: MDMD_Specification/MDMD.md
+      url: /MDMD_Specification/MDMD.md
